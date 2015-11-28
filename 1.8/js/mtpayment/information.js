@@ -3,25 +3,30 @@ MisterTango.Information = {
         setInterval(MisterTango.Information.updateOrderStatesTable, 30000);
     },
     updateOrderStatesTable: function () {
-        $.ajax({
-            type: 'GET',
-            async: true,
-            dataType: "json",
-            url: urlOrders,
-            headers: { "cache-control": "no-cache" },
-            cache: false,
-            data: {
-                action: 'get_html_table_order_states',
-                id_order: idOrder
-            },
-            success: function(data)
-            {
-                $('#mistertango-information-order-states').replaceWith(data.html_table_order_states);
-                if (MisterTango.disallow_different_payment) {
-                    $('.jsAllowDifferentPayment').remove();
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                console.log(xhttp.responseText);
+
+                if (xhttp.responseText.success) {
+                    var order = document.getElementById('mtpayment-information-order');
+                    order.innerHTML(xhttp.responseText.html);
+
+                    if (MisterTango.disallowDifferentPayment) {
+                        var elements = document.getElementsByClassName('jsAllowDifferentPayment');
+                        for(var index = 0; index < elements.length; index++) {
+                            elements[index].parentNode.removeChild(elements[index]);
+                        }
+                    }
                 }
             }
-        });
+        };
+        xhttp.open('POST', urlOrders, true);
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhttp.send(
+            'ajax=1' +
+            '&order=' + order
+        );
     }
 };
 

@@ -68,22 +68,27 @@ MisterTango = {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
                 console.log(xhttp.responseText);
 
-                /*if (data.success) {
-                    $('.jsAllowDifferentPayment').remove();
-                    MisterTango.disallow_different_payment = true;
-                    MisterTango.id_order = data.order;
+                if (xhttp.responseText.success) {
+                    var elements = document.getElementsByClassName('jsAllowDifferentPayment');
+                    for(var index = 0; index < elements.length; index++) {
+                        elements[index].parentNode.removeChild(elements[index]);
+                    }
+
+                    MisterTango.disallowDifferentPayment = true;
+                    MisterTango.order = xhttp.responseText.order;
                     MisterTango.success = true;
 
-                    if (MisterTango.is_opened === false) {
+                    if (MisterTango.isOpened === false) {
                         MisterTango.afterSuccess();
                     }
-                }*/
+                }
             }
         };
         xhttp.open('POST', mrTangoUrlOrders + (MisterTango.order?'validatetransaction':'validateorder'), true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.send(
-            'order=' + (MisterTango.order?MisterTango.order:'') +
+            'ajax=1' +
+            '&order=' + (MisterTango.order?MisterTango.order:'') +
             '&transaction=' + MisterTango.transaction +
             '&websocket=' + mrTangoCollect.ws_id +
             '&amount=' + MisterTango.amount
@@ -98,7 +103,7 @@ MisterTango = {
     },
     afterSuccess: function () {
         var operator = mrTangoUrlInformation.indexOf('?') === -1?'?':'&';
-        window.location.href = mrTangoUrlInformation + operator + 'id_order=' + MisterTango.id_order;
+        window.location.href = mrTangoUrlInformation + operator + 'order=' + MisterTango.order;
     }
 };
 

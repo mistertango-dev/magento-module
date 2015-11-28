@@ -14,8 +14,28 @@
         <models>
             <mtpayment>
                 <class>MisterTango_Payment_Model</class>
+                <resourceModel>mtpayment_resource</resourceModel>
             </mtpayment>
+            <mtpayment_resource>
+                <class>MisterTango_Payment_Model_Resource</class>
+                <entities>
+                    <transaction>
+                        <table>transactions_mistertango</table>
+                    </transaction>
+                    <callback>
+                        <table>callbacks_mistertango</table>
+                    </callback>
+                </entities>
+            </mtpayment_resource>
         </models>
+        <resources>
+            <mtpayment_setup>
+                <setup>
+                    <module>MisterTango_Payment</module>
+                    <class>MisterTango_Payment_Model_Resource_Setup</class>
+                </setup>
+            </mtpayment_setup>
+        </resources>
         <helpers>
             <mtpayment>
                 <class>MisterTango_Payment_Helper</class>

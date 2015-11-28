@@ -5,38 +5,44 @@
  */
 class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Action
 {
+
+    /**
+     *
+     */
     public function validateOrderAction()
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
+            if (!Mage::helper('customer')->isLoggedIn()) {
+                $this->getResponse()->setBody(
+                    Mage::helper('core')->jsonEncode(array(
+                        'success' => false,
+                        'error' => $this->__('No customer is logged in')
+                    ))
+                );
 
-            /**
-             * ---------------------------------------------------------------------------------------------------------
-             */
-            if (!Validate::isLoadedObject($this->context->customer)) {
-                die(Tools::jsonEncode(array(
-                    'success' => false,
-                    'error' => $this->module->l('You aren\'t logged in', 'mistertango'),
-                )));
+                return;
             }
 
-            $id_transaction = Tools::getValue('id_transaction');
-            $id_websocket = Tools::getValue('id_websocket');
-            $amount = Tools::getValue('amount');
+            $transactionId = $this->getRequest()->getParam('transaction');
+            $websocket = $this->getRequest()->getParam('websocket');
+            $amount = $this->getRequest()->getParam('amount');
 
-            $mrTango = new MisterTango();
+            $orderId = Mage::helper('mtpayment/order')->open($transactionId, $amount, $websocket);
 
-            $isValidOrder = $mrTango->openOrder($id_transaction, $amount, $id_websocket);
+            if (isset($orderId)) {
+                Mage::getSingleton('checkout/session')->clear();
+                Mage::getSingleton('checkout/session')->clearHelperData();
 
-            if ($isValidOrder) {
-                die(Tools::jsonEncode(array(
-                    'success' => true,
-                    'id_order' => $mrTango->currentOrder,
-                )));
+                $this->getResponse()->setBody(
+                    Mage::helper('core')->jsonEncode(array(
+                        'success' => true,
+                        'order' => $orderId
+                    ))
+                );
+
+                return;
             }
-            /**
-             * ---------------------------------------------------------------------------------------------------------
-             */
 
             $this->getResponse()->setBody(
                 Mage::helper('core')->jsonEncode(array(
@@ -44,109 +50,95 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
                     'error' => $this->__('Invalid transaction')
                 ))
             );
+
+            return;
         }
     }
 
+    /**
+     *
+     */
     public function validateTransactionAction()
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
+            if (!Mage::helper('customer')->isLoggedIn()) {
+                $this->getResponse()->setBody(
+                    Mage::helper('core')->jsonEncode(array(
+                        'success' => false,
+                        'error' => $this->__('No customer is logged in')
+                    ))
+                );
 
-            /**
-             * ---------------------------------------------------------------------------------------------------------
-             */
-            if (!Validate::isLoadedObject($this->context->customer)) {
-                die(Tools::jsonEncode(array(
-                    'success' => false,
-                    'error' => $this->module->l('You aren\'t logged in', 'mistertango'),
-                )));
+                return;
             }
 
-            $id_order = Tools::getValue('id_order');
-            $id_transaction = Tools::getValue('id_transaction');
-            $id_websocket = Tools::getValue('id_websocket');
-            $amount = Tools::getValue('amount');
+            $orderId = $this->getRequest()->getParam('order');
+            $transactionId = $this->getRequest()->getParam('transaction');
+            $websocket = $this->getRequest()->getParam('websocket');
+            $amount = $this->getRequest()->getParam('amount');
 
-            $mrTango = new MisterTango();
+            $order = Mage::getModel('sales/order')->load($orderId);
 
-            $order = new Order($id_order);
+            if ($order->isEmpty()) {
+                $this->getResponse()->setBody(
+                    Mage::helper('core')->jsonEncode(array(
+                        'success' => false,
+                        'error' => $this->__('Order is invalid')
+                    ))
+                );
 
-            if (Validate::isLoadedObject($order)) {
-                $mrTango->addTransaction($id_transaction, $id_websocket, $order->id, $amount);
-
-                die(Tools::jsonEncode(array(
-                    'success' => true,
-                    'id_order' => $order->id,
-                )));
+                return;
             }
-            /**
-             * ---------------------------------------------------------------------------------------------------------
-             */
+
+            Mage::getModel('mtpayment/transaction')
+                ->setId($transactionId)
+                ->setData('amount', $amount)
+                ->setData('order_id', $orderId)
+                ->setData('websocket', $websocket)
+                ->save();
 
             $this->getResponse()->setBody(
                 Mage::helper('core')->jsonEncode(array(
-                    'success' => false,
-                    'error' => $this->__('Order is invalid')
+                    'success' => true,
+                    'order' => $order->getId()
                 ))
             );
+
+            return;
         }
     }
 
+    /**
+     *
+     */
     public function getHtmlTableOrderStatesAction()
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
 
-            /**
-             * ---------------------------------------------------------------------------------------------------------
-             */
-            if (!Validate::isLoadedObject($this->context->customer)) {
-                die(Tools::jsonEncode(array(
-                    'success' => false,
-                    'error' => $this->module->l('You aren\'t logged in', 'mistertango'),
-                )));
+            $customer = Mage::helper('customer')->getCustomer();
+            $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order'));
+            $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+
+            if ($order->isEmpty() || $quote->isEmpty() || $quote->getCustomerId() != $customer->getId()) {
+                $this->getResponse()->setBody(
+                    Mage::helper('core')->jsonEncode(array(
+                        'success' => false,
+                        'error' => $this->__('Bad parameters')
+                    ))
+                );
             }
 
-            $id_order = Tools::getValue('id_order');
+            $this->loadLayout();
+            $block = $this->getLayout()->createBlock('mtpayment/order')->setTemplate('mtpayment/order.phtml');
 
-            $mrTango = new MisterTango();
-
-            $order = new Order($id_order);
-
-            if (Validate::isLoadedObject($order)) {
-                $cart = new Cart($order->id_cart);
-
-                $mrTango->assignTemplateAssets($this->context->smarty, $cart);
-                $mrTango->assignTemplateAssetsOrderStates($this->context->smarty, $order, $cart);
-
-                $path_table_order_states =
-                    _PS_MODULE_DIR_
-                    .$this->module->name
-                    .'/views/templates/front/table_order_states.tpl';
-
-                $path_themes_table_order_states =
-                    _PS_THEME_DIR_
-                    .'modules/'
-                    .$this->module->name
-                    .'/views/templates/front/table_order_states.tpl';
-
-                if (file_exists($path_themes_table_order_states)) {
-                    $path_table_order_states = $path_themes_table_order_states;
-                }
-
-                die(Tools::jsonEncode(array(
-                    'success' => true,
-                    'html_table_order_states' => $this->context->smarty->fetch($path_table_order_states),
-                )));
-            }
-            /**
-             * ---------------------------------------------------------------------------------------------------------
-             */
+            $block->setOrder($order);
 
             $this->getResponse()->setBody(
                 Mage::helper('core')->jsonEncode(array(
-                    'success' => false,
-                    'error' => $this->__('Order is invalid')
+                    'success' => true,
+                    'html' => $block->toHtml()
                 ))
             );
         }

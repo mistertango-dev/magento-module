@@ -1,49 +1,31 @@
 <?php
 
+/**
+ * Class MisterTango_Payment_InformationController
+ */
 class MisterTango_Payment_InformationController extends Mage_Core_Controller_Front_Action
 {
+    /**
+     *
+     */
     public function indexAction()
     {
-        /**
-         * ---------------------------------------------------------------------------------------------------------
-         */
-        parent::initContent();
-
-        if (!$this->module->active) {
-            Tools::redirect('index.php?controller=order&step=1');
+        if (!Mage::helper('customer')->isLoggedIn()) {
+            $this->norouteAction();
         }
 
-        $authorized = false;
+        $customer = Mage::helper('customer')->getCustomer();
+        $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order'));
+        $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
 
-        foreach (Module::getPaymentModules() as $module) {
-            if ($module['name'] == 'mistertango') {
-                $authorized = true;
-                break;
-            }
+        if ($order->isEmpty() || $quote->isEmpty() || $quote->getCustomerId() != $customer->getId()) {
+            $this->norouteAction();
         }
 
-        if (!$authorized) {
-            die($this->module->l('This payment method is not available.', 'validation'));
-        }
+        $this->loadLayout();
 
-        $order = new Order(Tools::getValue('id_order'));
-        $cart = new Cart($order->id_cart);
+        Mage::app()->getLayout()->getBlock('mtpayment.order')->setOrder($order);
 
-        $customer = new Customer($cart->id_customer);
-        if (!Validate::isLoadedObject($customer)) {
-            Tools::redirect('index.php?controller=order&step=1');
-        }
-
-        $mrTango = new MisterTango();
-
-        $mrTango->assignTemplateAssets($this->context->smarty, $cart);
-        $this->context->controller->addJS(_MODULE_DIR_.$this->module->name.'/views/js/information.js');
-
-        $mrTango->assignTemplateAssetsOrderStates($this->context->smarty, $order, $cart);
-
-        $this->setTemplate('information.tpl');
-        /**
-         * ---------------------------------------------------------------------------------------------------------
-         */
+        $this->renderLayout();
     }
 }

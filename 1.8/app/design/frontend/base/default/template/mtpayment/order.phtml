@@ -1,0 +1,39 @@
+<table class="data-table">
+    <tr>
+        <th>
+            <?php echo $this->__('Date'); ?>
+        </th>
+        <th>
+            <?php echo $this->__('Status'); ?>
+        </th>
+        <th>
+            <?php echo $this->__('Comment'); ?>
+        </th>
+        <th>
+            <?php echo $this->__('Actions'); ?>
+        </th>
+    </tr>
+    <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
+    <tr>
+        <td>
+            <strong>
+                <?php echo $this->helper('core')->formatDate($_item->getCreatedAtDate(), 'medium') ?>
+            </strong>
+            <?php echo $this->helper('core')->formatTime($_item->getCreatedAtDate(), 'medium') ?>
+        </td>
+        <td>
+            <strong>
+                <?php echo $_item->getStatusLabel() ?>
+            </strong>
+        </td>
+        <td>
+            <?php if ($_item->getComment()): ?>
+            <?php echo $this->escapeHtml($_item->getComment(), array('b','br','strong','i','u')) ?>
+            <?php endif; ?>
+        </td>
+        <td>
+
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>

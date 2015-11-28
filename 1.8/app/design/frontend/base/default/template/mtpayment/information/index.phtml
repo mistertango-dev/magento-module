@@ -1,0 +1,13 @@
+<div class="box-account box-recent">
+    <div class="box-head">
+        <h2><?php echo $this->__('Order history') ?></h2>
+    </div>
+    <div id="mtpayment-information-order">
+        <?php echo $this->getChildHtml('order') ?>
+    </div>
+    <script>
+        var urlOrder = '<?php echo $this->getUrl('mtpayment/orders/gethtmltableorderstates'); ?>';
+        var order = '<?php echo $this->getRequest()->getParam('order'); ?>';
+    </script>
+</div>
+

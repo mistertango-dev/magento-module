@@ -42,6 +42,20 @@
             <block type="mtpayment/button" name="checkout.onepage.review.button" as="button" template="checkout/onepage/review/button.phtml"/>
         </reference>
     </checkout_onepage_review>
+    <mtpayment_information_index>
+        <reference name="root">
+            <reference name="head">
+                <action method="addJs">
+                    <script>mtpayment/information.js</script>
+                </action>
+            </reference>
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="mtpayment.information" template="mtpayment/information/index.phtml">
+                <block type="mtpayment/order" name="mtpayment.order" as="order" template="mtpayment/order.phtml" />
+            </block>
+        </reference>
+    </mtpayment_information_index>
     <mtpayment_callback_index>
         <reference name="root">
             <action method="setTemplate"><template>mtpayment/callback/blank.phtml</template></action>
