@@ -66,16 +66,16 @@ MisterTango = {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
-                console.log(xhttp.responseText);
+                var response = JSON.parse(xhttp.responseText);
 
-                if (xhttp.responseText.success) {
+                if (response.success) {
                     var elements = document.getElementsByClassName('jsAllowDifferentPayment');
                     for(var index = 0; index < elements.length; index++) {
                         elements[index].parentNode.removeChild(elements[index]);
                     }
 
                     MisterTango.disallowDifferentPayment = true;
-                    MisterTango.order = xhttp.responseText.order;
+                    MisterTango.order = response.order;
                     MisterTango.success = true;
 
                     if (MisterTango.isOpened === false) {

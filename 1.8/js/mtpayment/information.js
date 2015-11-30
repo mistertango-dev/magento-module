@@ -6,11 +6,14 @@ MisterTango.Information = {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
-                console.log(xhttp.responseText);
+                var response = JSON.parse(xhttp.responseText);
 
-                if (xhttp.responseText.success) {
+                if (response.success) {
                     var order = document.getElementById('mtpayment-information-order');
-                    order.innerHTML(xhttp.responseText.html);
+
+                    if (order != null) {
+                        order.innerHTML = response.html;
+                    }
 
                     if (MisterTango.disallowDifferentPayment) {
                         var elements = document.getElementsByClassName('jsAllowDifferentPayment');
@@ -21,11 +24,11 @@ MisterTango.Information = {
                 }
             }
         };
-        xhttp.open('POST', urlOrders, true);
+        xhttp.open('POST', mrTangoUrlOrdersTableStatuses, true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.send(
             'ajax=1' +
-            '&order=' + order
+            '&order=' + mrTangoOrder
         );
     }
 };

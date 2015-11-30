@@ -26,4 +26,33 @@ class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
     {
         return $this->order;
     }
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function getWebsocket($orderId)
+    {
+        return Mage::getModel('mtpayment/transaction')
+            ->getCollection()
+            ->addFieldToFilter('order_id', $orderId)
+            ->getFirstItem()
+            ->getWebsocket();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowedDifferentPayment()
+    {
+        $allow = true;
+
+        foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item) {
+            if ($_item->getStatus() != Mage::helper('mtpayment/data')->getStatusPending()) {
+                $allow = false;
+            }
+        }
+
+        return $allow;
+    }
 }

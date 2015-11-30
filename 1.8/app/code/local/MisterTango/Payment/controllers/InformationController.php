@@ -12,6 +12,8 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
     {
         if (!Mage::helper('customer')->isLoggedIn()) {
             $this->norouteAction();
+
+            return;
         }
 
         $customer = Mage::helper('customer')->getCustomer();
@@ -20,6 +22,8 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
 
         if ($order->isEmpty() || $quote->isEmpty() || $quote->getCustomerId() != $customer->getId()) {
             $this->norouteAction();
+
+            return;
         }
 
         $this->loadLayout();

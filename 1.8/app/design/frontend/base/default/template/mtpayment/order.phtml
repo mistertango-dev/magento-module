@@ -13,6 +13,7 @@
             <?php echo $this->__('Actions'); ?>
         </th>
     </tr>
+    <?php $allowDifferentPayment = $this->isAllowedDifferentPayment(); ?>
     <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
     <tr>
         <td>
@@ -32,7 +33,22 @@
             <?php endif; ?>
         </td>
         <td>
-
+            <?php if ($_item->getStatus() == Mage::helper('mtpayment/data')->getStatusPending() && $allowDifferentPayment): ?>
+            <p class="jsAllowDifferentPayment">
+                <?php echo $this->__('Check your email, we sent you an invoice. If you wish to use other methods for payment'); ?> -
+                <a href="#"
+                   class="mistertango-button-pay"
+                   data-ws-id="<?php echo $this->getWebsocket($this->getOrder()->getId()); ?>"
+                   data-language-code="<?php echo Mage::app()->getStore()->getLanguageCode(); ?>"
+                   data-customer-email="<?php echo Mage::helper('customer')->getCustomer()->getEmail(); ?>"
+                   data-id-order="<?php echo $this->getOrder()->getId(); ?>"
+                   data-amount="<?php echo $this->getOrder()->getGrandTotal(); ?>"
+                   data-currency="<?php echo Mage::app()->getStore()->getCurrentCurrencyCode(); ?>"
+                   data-id-transaction="<?php echo Mage::helper('mtpayment/data')->generateTransactionId(); ?>">
+                    <?php echo $this->__('click here'); ?>
+                </a>
+            </p>
+            <?php endif; ?>
         </td>
     </tr>
     <?php endforeach; ?>

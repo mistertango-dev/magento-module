@@ -46,8 +46,15 @@
         <reference name="root">
             <reference name="head">
                 <action method="addJs">
+                    <script>mtpayment/payment.js</script>
+                </action>
+                <action method="addJs">
                     <script>mtpayment/information.js</script>
                 </action>
+                <block type="core/text" name="mtpayment.mtcollect">
+                    <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
+                </block>
+                <block type="mtpayment/variables" name="mtpayment.variables" template="mtpayment/variables.phtml" />
             </reference>
         </reference>
         <reference name="content">

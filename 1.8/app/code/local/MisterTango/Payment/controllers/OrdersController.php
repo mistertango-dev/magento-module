@@ -112,7 +112,7 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
     /**
      *
      */
-    public function getHtmlTableOrderStatesAction()
+    public function getHtmlTableOrderStatusesAction()
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {

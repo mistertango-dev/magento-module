@@ -32,8 +32,8 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
                 /*
                  * Debug purpose only
                  */
-                //$data->custom->description = '3_1448626711';
-                //$data->custom->data->amount = '630.00';
+                //$data->custom->description = '3_1448871677';
+                //$data->custom->data->amount = '735.00';
 
                 $transaction = explode('_', $data->custom->description);
 
