@@ -1,0 +1,8 @@
+<config>
+    <modules>
+        <MisterTango_Payment>
+            <active>true</active>
+            <codePool>local</codePool>
+        </MisterTango_Payment>
+    </modules>
+</config>

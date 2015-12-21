@@ -56,7 +56,7 @@ MisterTango = {
         };
     },
     onOpen: function () {
-        MisterTango.is_opened = true;
+        MisterTango.isOpened = true;
     },
     onOfflinePayment: function (response) {
         mrTangoCollect.onSuccess = function () {};
@@ -78,9 +78,7 @@ MisterTango = {
                     MisterTango.order = response.order;
                     MisterTango.success = true;
 
-                    if (MisterTango.isOpened === false) {
-                        MisterTango.afterSuccess();
-                    }
+                    MisterTango.afterSuccess();
                 }
             }
         };
@@ -102,8 +100,10 @@ MisterTango = {
         }
     },
     afterSuccess: function () {
-        var operator = mrTangoUrlInformation.indexOf('?') === -1?'?':'&';
-        window.location.href = mrTangoUrlInformation + operator + 'order=' + MisterTango.order;
+        if (MisterTango.isOpened === false) {
+            var operator = mrTangoUrlInformation.indexOf('?') === -1?'?':'&';
+            window.location.href = mrTangoUrlInformation + operator + 'order=' + MisterTango.order;
+        }
     }
 };
 

@@ -28,6 +28,20 @@ class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
     }
 
     /**
+     * @return mixed
+     */
+    public function getCustomerEmail()
+    {
+        if (empty($this->order)) {
+            return null;
+        }
+
+        $quote = Mage::getModel('sales/quote')->load($this->order->getQuoteId());
+
+        return $quote->getBillingAddress()->getEmail();
+    }
+
+    /**
      * @param $orderId
      * @return mixed
      */

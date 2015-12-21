@@ -11,7 +11,10 @@ class MisterTango_Payment_Block_Button extends Mage_Core_Block_Template
      */
     public function getCustomerEmail()
     {
-        return Mage::helper('customer')->getCustomer()->getEmail();
+        return Mage::getSingleton('checkout/session')
+            ->getQuote()
+            ->getBillingAddress()
+            ->getEmail();
     }
 
     /**

@@ -13,17 +13,6 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
-            if (!Mage::helper('customer')->isLoggedIn()) {
-                $this->getResponse()->setBody(
-                    Mage::helper('core')->jsonEncode(array(
-                        'success' => false,
-                        'error' => $this->__('No customer is logged in')
-                    ))
-                );
-
-                return;
-            }
-
             $transactionId = $this->getRequest()->getParam('transaction');
             $websocket = $this->getRequest()->getParam('websocket');
             $amount = $this->getRequest()->getParam('amount');
@@ -62,17 +51,6 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
-            if (!Mage::helper('customer')->isLoggedIn()) {
-                $this->getResponse()->setBody(
-                    Mage::helper('core')->jsonEncode(array(
-                        'success' => false,
-                        'error' => $this->__('No customer is logged in')
-                    ))
-                );
-
-                return;
-            }
-
             $orderId = $this->getRequest()->getParam('order');
             $transactionId = $this->getRequest()->getParam('transaction');
             $websocket = $this->getRequest()->getParam('websocket');
