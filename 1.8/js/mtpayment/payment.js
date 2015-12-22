@@ -28,7 +28,7 @@ MisterTango = {
             if (target.classList.contains('mistertango-button-pay')) {
                 e.preventDefault();
 
-                var websocket = this.getAttribute('data-websocket');
+                var websocket = target.getAttribute('data-websocket');
                 if (websocket != null) {
                     mrTangoCollect.ws_id = websocket;
                 }
