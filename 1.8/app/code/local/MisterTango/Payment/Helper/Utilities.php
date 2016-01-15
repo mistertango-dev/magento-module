@@ -12,6 +12,9 @@ class MisterTango_Payment_Helper_Utilities extends Mage_Core_Helper_Abstract
      */
     function decrypt($encoded_text, $key)
     {
+        if (strlen($key) == 30)
+            $key .= "\0\0";
+
         $encoded_text = trim($encoded_text);
         $ciphertext_dec = base64_decode($encoded_text);
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
