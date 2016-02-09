@@ -19,7 +19,10 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             $quoteId = $transaction[0];
 
             $quote = Mage::getModel('sales/quote')->load($quoteId);
-            $quote->collectTotals();
+	        $quote
+		        ->collectTotals()
+		        ->setIsActive(false)
+		        ->save();
             $checkout = Mage::getSingleton('checkout/type_onepage');
             $checkout
                 ->setQuote($quote)
