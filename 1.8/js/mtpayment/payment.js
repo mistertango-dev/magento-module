@@ -34,7 +34,7 @@ MisterTango = {
                 }
 
                 MisterTango.order = null;
-                var order = this.getAttribute('data-order');
+                var order = target.getAttribute('data-order');
                 if (order != null) {
                     MisterTango.order = order;
                 }
