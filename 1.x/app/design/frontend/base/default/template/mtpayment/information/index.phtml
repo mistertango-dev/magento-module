@@ -1,0 +1,14 @@
+<div class="box-account box-recent">
+    <div class="box-head">
+        <h2><?php echo $this->__('Order history') ?></h2>
+    </div>
+    <?php $orderBlock = $this->getChild('order'); ?>
+    <div id="mtpayment-information-order">
+        <?php echo $orderBlock->toHtml(); ?>
+    </div>
+    <script>
+        var mrTangoOrder = '<?php echo $orderBlock->getOrder()->getId(); ?>';
+        var mrTangoUrlOrdersTableStatuses = '<?php echo $this->getUrl('mtpayment/orders/gethtmltableorderstatuses'); ?>';
+    </script>
+</div>
+

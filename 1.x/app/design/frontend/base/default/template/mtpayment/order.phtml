@@ -1,0 +1,55 @@
+<table class="data-table">
+    <tr>
+        <th>
+            <?php echo $this->__('Date'); ?>
+        </th>
+        <th>
+            <?php echo $this->__('Status'); ?>
+        </th>
+        <th>
+            <?php echo $this->__('Comment'); ?>
+        </th>
+        <th>
+            <?php echo $this->__('Actions'); ?>
+        </th>
+    </tr>
+    <?php $allowDifferentPayment = $this->isAllowedDifferentPayment(); ?>
+    <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
+    <tr>
+        <td>
+            <strong>
+                <?php echo $this->helper('core')->formatDate($_item->getCreatedAtDate(), 'medium') ?>
+            </strong>
+            <?php echo $this->helper('core')->formatTime($_item->getCreatedAtDate(), 'medium') ?>
+        </td>
+        <td>
+            <strong>
+                <?php echo $_item->getStatusLabel() ?>
+            </strong>
+        </td>
+        <td>
+            <?php if ($_item->getComment()): ?>
+            <?php echo $this->escapeHtml($_item->getComment(), array('b','br','strong','i','u')) ?>
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if ($_item->getStatus() == Mage::helper('mtpayment/data')->getStatusPending() && $allowDifferentPayment): ?>
+            <p class="jsAllowDifferentPayment">
+                <?php echo $this->__('Check your email, we sent you an invoice. If you wish to use other methods for payment'); ?> -
+                <a href="#"
+                   class="mistertango-button-pay"
+                   data-websocket="<?php echo $this->getWebsocket($this->getOrder()->getId()); ?>"
+                   data-language="<?php echo Mage::app()->getStore()->getLanguageCode(); ?>"
+                   data-customer-email="<?php echo $this->getCustomerEmail(); ?>"
+                   data-order="<?php echo $this->getOrder()->getId(); ?>"
+                   data-amount="<?php echo number_format($this->getOrder()->getGrandTotal(), 2, '.', ''); ?>"
+                   data-currency="<?php echo Mage::app()->getStore()->getCurrentCurrencyCode(); ?>"
+                   data-transaction="<?php echo Mage::helper('mtpayment/data')->generateTransactionId($this->getOrder()->getQuoteId()); ?>">
+                    <?php echo $this->__('click here'); ?>
+                </a>
+            </p>
+            <?php endif; ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
