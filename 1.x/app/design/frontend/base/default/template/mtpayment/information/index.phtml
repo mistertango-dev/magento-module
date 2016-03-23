@@ -7,8 +7,8 @@
         <?php echo $orderBlock->toHtml(); ?>
     </div>
     <script>
-        var mrTangoOrder = '<?php echo $orderBlock->getOrder()->getId(); ?>';
-        var mrTangoUrlOrdersTableStatuses = '<?php echo $this->getUrl('mtpayment/orders/gethtmltableorderstatuses'); ?>';
+        var MTPAYMENT_ORDER_ID = '<?php echo $orderBlock->getOrder()->getId(); ?>';
+        var MTPAYMENT_URL_TABLE_ORDER_STATUSES = '<?php echo $this->getUrl('mtpayment/orders/gethtmltableorderstatuses'); ?>';
     </script>
 </div>
 

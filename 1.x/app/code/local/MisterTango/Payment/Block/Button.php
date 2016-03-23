@@ -39,7 +39,7 @@ class MisterTango_Payment_Block_Button extends Mage_Core_Block_Template
      */
     public function getGrandTotal($formatted = false)
     {
-        $grandTotal = $this->helper('checkout/cart')->getQuote()->getGrandTotal();
+        $grandTotal = Mage::helper('checkout/cart')->getQuote()->getGrandTotal();
 
         return $formatted?Mage::helper('core')->formatPrice($grandTotal, false):$grandTotal;
     }

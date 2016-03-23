@@ -1,6 +1,6 @@
-MisterTango.Information = {
+MTPayment.Information = {
     init: function () {
-        setInterval(MisterTango.Information.updateOrderStatesTable, 30000);
+        setInterval(MTPayment.Information.updateOrderStatesTable, 30000);
     },
     updateOrderStatesTable: function () {
         var xhttp = new XMLHttpRequest();
@@ -15,7 +15,7 @@ MisterTango.Information = {
                         order.innerHTML = response.html;
                     }
 
-                    if (MisterTango.disallowDifferentPayment) {
+                    if (MTPayment.disallowDifferentPayment) {
                         var elements = document.getElementsByClassName('jsAllowDifferentPayment');
                         for(var index = 0; index < elements.length; index++) {
                             elements[index].parentNode.removeChild(elements[index]);
@@ -24,13 +24,13 @@ MisterTango.Information = {
                 }
             }
         };
-        xhttp.open('POST', mrTangoUrlOrdersTableStatuses, true);
+        xhttp.open('POST', MTPAYMENT_URL_TABLE_ORDER_STATUSES, true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.send(
             'ajax=1' +
-            '&order=' + mrTangoOrder
+            '&order=' + MTPAYMENT_ORDER_ID
         );
     }
 };
 
-document.addEventListener('DOMContentLoaded', MisterTango.Information.init, false);
+document.addEventListener('DOMContentLoaded', MTPayment.Information.init, false);

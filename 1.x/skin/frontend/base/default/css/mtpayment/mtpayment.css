@@ -1,4 +1,4 @@
-.mistertango-button-pay {
+.mtpayment-button-pay {
     display: inline-block;
     width: 100%;
     max-width: 30%;
@@ -24,9 +24,10 @@
     text-decoration: none;
 }
 
-.mistertango-button-pay:hover {
+.mtpayment-button-pay:hover {
     text-decoration: none;
     background-color: #0B8FE3 !important;
     border-color: #0B8FE3 !important;
     background-image: linear-gradient(to top, rgba(24, 24, 25, 0.05), rgba(255, 255, 255, 0.05));
+    color: #FFF;
 }

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <MisterTango_Payment>
-            <version>0.9.12</version>
+            <version>1.0</version>
         </MisterTango_Payment>
     </modules>
     <global>

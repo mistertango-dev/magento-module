@@ -25,10 +25,10 @@
         <reference name="root">
             <reference name="head">
                 <action method="addCss">
-                    <stylesheet>css/mtpayment/payment.css</stylesheet>
+                    <stylesheet>css/mtpayment/mtpayment.css</stylesheet>
                 </action>
                 <action method="addJs">
-                    <script>mtpayment/payment.js</script>
+                    <script>mtpayment/mtpayment.js</script>
                 </action>
                 <block type="core/text" name="mtpayment.mtcollect">
                     <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
@@ -42,11 +42,27 @@
             <block type="mtpayment/button" name="checkout.onepage.review.button" as="button" template="checkout/onepage/review/button.phtml"/>
         </reference>
     </checkout_onepage_review>
+    <opc_index_index>
+        <reference name="head">
+            <action method="addJs">
+                <script>mtpayment/mtpayment.js</script>
+            </action>
+            <action method="addJs">
+                <script>mtpayment/iwd_opc_support.js</script>
+            </action>
+            <block type="core/text" name="mtpayment.mtcollect">
+                <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
+            </block>
+        </reference>
+        <reference name="before_body_end">
+            <block type="mtpayment/variables" name="mtpayment.variables" template="mtpayment/variables.phtml" />
+        </reference>
+    </opc_index_index>
     <mtpayment_information_index>
         <reference name="root">
             <reference name="head">
                 <action method="addJs">
-                    <script>mtpayment/payment.js</script>
+                    <script>mtpayment/mtpayment.js</script>
                 </action>
                 <action method="addJs">
                     <script>mtpayment/information.js</script>
