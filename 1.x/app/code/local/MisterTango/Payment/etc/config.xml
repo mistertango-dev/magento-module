@@ -54,7 +54,7 @@
             <mtpayment>
                 <active>0</active>
                 <model>mtpayment/payment</model>
-                <title>MisterTango</title>
+                <title>Per internetinę bankinkystę (Swedbank, SEB, DNB ir kiti)</title>
                 <order_status>pending</order_status>
                 <allowspecific>0</allowspecific>
                 <payment_action>sale</payment_action>
