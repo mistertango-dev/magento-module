@@ -44,6 +44,9 @@
     </checkout_onepage_review>
     <opc_index_index>
         <reference name="head">
+            <action method="addCss">
+                <stylesheet>css/mtpayment/mtpayment.css</stylesheet>
+            </action>
             <action method="addJs">
                 <script>mtpayment/mtpayment.js</script>
             </action>

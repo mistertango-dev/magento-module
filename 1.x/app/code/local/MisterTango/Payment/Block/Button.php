@@ -52,7 +52,8 @@ class MisterTango_Payment_Block_Button extends Mage_Core_Block_Template
         $quote = Mage::getSingleton('checkout/session')->getQuote();
         if ($quote) {
             $payment = $quote->getPayment();
-            if ($payment && $payment->getMethod() == 'mtpayment') {
+            $isIWDOPC = (bool)Mage::getStoreConfig('opc/global/status');
+            if ($payment && $payment->getMethod() == 'mtpayment' && !$isIWDOPC) {
                 $this->setTemplate('mtpayment/onepage/review/button.phtml');
             }
         }
