@@ -2,7 +2,7 @@
 <config>
     <modules>
         <MisterTango_Payment>
-            <version>1.1</version>
+            <version>1.2</version>
         </MisterTango_Payment>
     </modules>
     <global>
@@ -53,6 +53,7 @@
         <payment>
             <mtpayment>
                 <active>0</active>
+                <standard_mode>0</standard_mode>
                 <model>mtpayment/payment</model>
                 <title>Per internetinę bankinkystę (Swedbank, SEB, DNB ir kiti)</title>
                 <order_status>pending</order_status>

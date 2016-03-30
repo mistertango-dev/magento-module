@@ -10,7 +10,13 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
      */
     public function indexAction()
     {
-        $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order'));
+        $id = $this->getRequest()->getParam('order');
+
+        if (empty($id)) {
+          $id = Mage::getSingleton('checkout/session')->getLastOrderId();
+        }
+
+        $order = Mage::getModel('sales/order')->load($id);
         $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
 
         if ($order->isEmpty() || $quote->isEmpty()) {
@@ -21,7 +27,10 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
 
         $this->loadLayout();
 
-        Mage::app()->getLayout()->getBlock('mtpayment.order')->setOrder($order);
+        $block = Mage::app()->getLayout()->getBlock('mtpayment.order');
+
+        $block->setOrder($order);
+        $block->setInitPayment($this->getRequest()->getParam('initpayment'));
 
         $this->renderLayout();
     }

@@ -12,6 +12,13 @@ class MisterTango_Payment_Model_Payment extends Mage_Payment_Model_Method_Abstra
      */
     public function getOrderPlaceRedirectUrl()
     {
+        if (Mage::helper('mtpayment/data')->isStandardMode()) {
+            return Mage::getUrl(
+                'mtpayment/information',
+                array('initpayment' => true)
+            );
+        }
+
         return '#mtpayment';
     }
 }

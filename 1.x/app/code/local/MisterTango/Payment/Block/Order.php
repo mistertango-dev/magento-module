@@ -12,11 +12,18 @@ class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
     private $order;
 
     /**
+     * @var bool
+     */
+    private $initPayment = false;
+
+    /**
      *
      */
     public function setOrder($order)
     {
         $this->order = $order;
+
+        return $this;
     }
 
     /**
@@ -25,6 +32,25 @@ class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * @param $initPayment
+     * @return $this
+     */
+    public function setInitPayment($initPayment)
+    {
+        $this->initPayment = (bool)$initPayment;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isInitPayment()
+    {
+        return $this->initPayment;
     }
 
     /**

@@ -17,7 +17,7 @@ MTPayment = {
 
             if (target.classList.contains('mtpayment-button-pay')) {
                 var websocket = target.getAttribute('data-websocket');
-                if (websocket != null) {
+                if (websocket.length > 0) {
                     MTPayment.websocket = websocket;
                 }
 
@@ -109,3 +109,10 @@ MTPayment = {
 };
 
 document.addEventListener('DOMContentLoaded', function () { MTPayment.init() }, false);
+
+window.onload = function () {
+    if (typeof MTPAYMENT_INIT_PAYMENT != 'undefined' && MTPAYMENT_INIT_PAYMENT) {
+        var button = document.getElementsByClassName('mtpayment-button-pay')[0];
+        button.click();
+    }
+};
