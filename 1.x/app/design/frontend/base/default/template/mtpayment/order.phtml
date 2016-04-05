@@ -35,7 +35,11 @@
         <td>
             <?php if ($_item->getStatus() == Mage::helper('mtpayment/data')->getStatusPending() && $allowDifferentPayment): ?>
             <p class="jsAllowDifferentPayment">
+                <?php if ($this->isInitPayment()) : ?>
+                <?php echo $this->__('If you wish to use other methods for payment'); ?> -
+                <?php else : ?>
                 <?php echo $this->__('Check your email, we sent you an invoice. If you wish to use other methods for payment'); ?> -
+                <?php endif; ?>
                 <a href="#"
                    class="mtpayment-button-pay"
                    data-websocket="<?php echo $this->getWebsocket($this->getOrder()->getId()); ?>"

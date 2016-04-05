@@ -33,6 +33,12 @@ MTPayment = {
             }
         };
     },
+    initPayment: function () {
+        if (typeof MTPAYMENT_INIT_PAYMENT != 'undefined' && MTPAYMENT_INIT_PAYMENT == '1') {
+            var button = document.getElementsByClassName('mtpayment-button-pay')[0];
+            button.click();
+        }
+    },
     load: function () {
         mrTangoCollect.load();
 
@@ -110,9 +116,8 @@ MTPayment = {
 
 document.addEventListener('DOMContentLoaded', function () { MTPayment.init() }, false);
 
-window.onload = function () {
-    if (typeof MTPAYMENT_INIT_PAYMENT != 'undefined' && MTPAYMENT_INIT_PAYMENT) {
-        var button = document.getElementsByClassName('mtpayment-button-pay')[0];
-        button.click();
-    }
-};
+if(window.addEventListener){
+    window.addEventListener('load', MTPayment.initPayment)
+}else{
+    window.attachEvent('onload', MTPayment.initPayment)
+}
