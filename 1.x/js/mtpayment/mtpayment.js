@@ -17,7 +17,7 @@ MTPayment = {
 
             if (target.classList.contains('mtpayment-button-pay')) {
                 var websocket = target.getAttribute('data-websocket');
-                if (websocket.length > 0) {
+                if (MTPayment.websocket != null && websocket.length > 0) {
                     MTPayment.websocket = websocket;
                 }
 

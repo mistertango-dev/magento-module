@@ -41,6 +41,9 @@
         <reference name="root">
             <block type="mtpayment/button" name="checkout.onepage.review.button" as="button" template="checkout/onepage/review/button.phtml"/>
         </reference>
+        <reference name="checkout.onepage.review.button">
+            <action method="setTemplate" ifconfig="opc/global/status"><template>opc/onepage/review/button.phtml</template></action>
+        </reference>
     </checkout_onepage_review>
     <opc_index_index>
         <reference name="head">
