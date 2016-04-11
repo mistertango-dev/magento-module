@@ -13,16 +13,28 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
      */
     public function open($transactionId, $amount, $websocket = null)
     {
+        $orderId = Mage::getModel('mtpayment/transaction')
+            ->getCollection()
+            ->addFieldToFilter('transaction_id', $transactionId)
+            ->getFirstItem()
+            ->getOrderId();
+
         $transaction = explode('_', $transactionId);
 
         if (count($transaction) == 2) {
             $quoteId = $transaction[0];
 
             $quote = Mage::getModel('sales/quote')->load($quoteId);
-	        $quote
-		        ->collectTotals()
-		        ->setIsActive(false)
-		        ->save();
+
+            if (!$quote->getIsActive()) {
+                return $orderId;
+            }
+
+            $quote
+                ->collectTotals()
+                ->setIsActive(false)
+                ->save();
+
             $checkout = Mage::getSingleton('checkout/type_onepage');
             $checkout
                 ->setQuote($quote)
@@ -30,12 +42,14 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 
             $order = Mage::getModel('sales/order')->load($checkout->getLastOrderId(), 'increment_id');
 
-            Mage::getModel('mtpayment/transaction')
-                ->setId($transactionId)
-                ->setData('amount', $amount)
-                ->setData('order_id', $order->getId())
-                ->setData('websocket', $websocket)
-                ->save();
+            if (empty($orderId)) {
+                Mage::getModel('mtpayment/transaction')
+                    ->setId($transactionId)
+                    ->setData('amount', $amount)
+                    ->setData('order_id', $order->getId())
+                    ->setData('websocket', $websocket)
+                    ->save();
+            }
 
 	        Mage::getSingleton('checkout/cart')->truncate();
 	        Mage::getSingleton('checkout/session')->clear();
@@ -43,7 +57,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             return $order->getId();
         }
 
-        return null;
+        return $orderId;
     }
 
     /**
@@ -53,17 +67,17 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
      */
     public function close($transactionId, $amount)
     {
-        $orderId = Mage::getModel('mtpayment/transaction')
-            ->getCollection()
-            ->addFieldToFilter('transaction_id', $transactionId)
-            ->getFirstItem()
-            ->getOrderId();
-
-        if (empty($orderId)) {
-            $orderId = $this->open($transactionId, $amount);
-        }
+        $orderId = $this->open($transactionId, $amount);
 
         $order = Mage::getModel('sales/order')->load($orderId);
+
+        if ($order && Mage::helper('mtpayment/data')->isStandardMode() && $order->getCanSendNewEmailFlag()) {
+            try {
+                $order->queueNewOrderEmail();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
 
         $payment = $order->getPayment();
         $payment->setTransactionId($transactionId);
