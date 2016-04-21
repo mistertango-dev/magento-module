@@ -2,7 +2,6 @@ MTPayment = {
     isOpened: false,
     success: false,
     order: null,
-    disallowDifferentPayment: false,
     websocket: null,
     transaction: null,
     customerEmail: null,
@@ -81,7 +80,6 @@ MTPayment = {
                         elements[index].parentNode.removeChild(elements[index]);
                     }
 
-                    MTPayment.disallowDifferentPayment = true;
                     MTPayment.order = response.order;
                     MTPayment.success = true;
 
@@ -108,8 +106,8 @@ MTPayment = {
     },
     afterSuccess: function () {
         if (MTPayment.isOpened === false) {
-            var operator = MTPAYMENT_URL_INFORMATION.indexOf('?') === -1?'?':'&';
-            window.location.href = MTPAYMENT_URL_INFORMATION + operator + 'order=' + MTPayment.order;
+            var operator = MTPAYMENT_URL_REDIRECT.indexOf('?') === -1?'?':'&';
+            window.location.href = MTPAYMENT_URL_REDIRECT + operator + 'order=' + MTPayment.order;
         }
     }
 };

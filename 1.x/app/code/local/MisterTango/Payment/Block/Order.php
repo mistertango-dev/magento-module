@@ -81,18 +81,31 @@ class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
     }
 
     /**
+     * @param $orderId
      * @return bool
      */
-    public function isAllowedDifferentPayment()
+    public function isPaid($orderId)
     {
-        $allow = true;
+        $transactionId = Mage::getModel('mtpayment/transaction')
+            ->getCollection()
+            ->addFieldToFilter('order_id', $orderId)
+            ->getFirstItem()
+            ->getTransactionId();
 
-        foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item) {
-            if ($_item->getStatus() != Mage::helper('mtpayment/data')->getStatusPending()) {
-                $allow = false;
-            }
+        if (empty($transactionId)) {
+            return false;
         }
 
-        return $allow;
+        $callbackUuid = Mage::getModel('mtpayment/callback')
+            ->getCollection()
+            ->addFieldToFilter('transaction_id', $transactionId)
+            ->getFirstItem()
+            ->getCallbackUuid();
+
+        if (empty($callbackUuid)) {
+            return false;
+        }
+
+        return true;
     }
 }

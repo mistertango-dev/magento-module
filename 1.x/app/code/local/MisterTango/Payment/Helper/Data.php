@@ -8,6 +8,7 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     const XML_PATH_USERNAME = 'payment/mtpayment/mrtango_username';
     const XML_PATH_SECRET_KEY = 'payment/mtpayment/mrtango_secret_key';
     const XML_PATH_STANDARD_MODE = 'payment/mtpayment/standard_mode';
+    const XML_PATH_STANDARD_REDIRECT = 'payment/mtpayment/standard_redirect';
     const XML_PATH_STATUS_PENDING = 'payment/mtpayment/status_pending';
     const XML_PATH_STATUS_SUCCESS = 'payment/mtpayment/status_success';
     const XML_PATH_STATUS_ERROR = 'payment/mtpayment/status_error';
@@ -34,6 +35,14 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     public function isStandardMode()
     {
         return (bool)Mage::getStoreConfig(self::XML_PATH_STANDARD_MODE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStandardRedirect()
+    {
+        return (bool)Mage::getStoreConfig(self::XML_PATH_STANDARD_REDIRECT);
     }
 
     /**

@@ -20,9 +20,6 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
             $orderId = Mage::helper('mtpayment/order')->open($transactionId, $amount, $websocket);
 
             if (isset($orderId)) {
-                Mage::getSingleton('checkout/session')->clear();
-                Mage::getSingleton('checkout/session')->clearHelperData();
-
                 $this->getResponse()->setBody(
                     Mage::helper('core')->jsonEncode(array(
                         'success' => true,

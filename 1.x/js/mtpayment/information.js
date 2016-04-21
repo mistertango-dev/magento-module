@@ -14,13 +14,6 @@ MTPayment.Information = {
                     if (order != null) {
                         order.innerHTML = response.html;
                     }
-
-                    if (MTPayment.disallowDifferentPayment) {
-                        var elements = document.getElementsByClassName('jsAllowDifferentPayment');
-                        for(var index = 0; index < elements.length; index++) {
-                            elements[index].parentNode.removeChild(elements[index]);
-                        }
-                    }
                 }
             }
         };

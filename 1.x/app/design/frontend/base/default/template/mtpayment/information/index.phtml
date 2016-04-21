@@ -9,7 +9,7 @@
     <script>
         var MTPAYMENT_ORDER_ID = '<?php echo $orderBlock->getOrder()->getId(); ?>';
         var MTPAYMENT_INIT_PAYMENT = '<?php echo $orderBlock->isInitPayment(); ?>';
-        var MTPAYMENT_URL_TABLE_ORDER_STATUSES = '<?php echo $this->getUrl('mtpayment/orders/gethtmltableorderstatuses'); ?>';
+        var MTPAYMENT_URL_TABLE_ORDER_STATUSES = '<?php echo $this->getUrl('mtpayment/orders/gethtmltableorderstatuses', array('_secure' => true)); ?>';
     </script>
 </div>
 

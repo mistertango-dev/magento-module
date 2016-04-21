@@ -52,7 +52,6 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             }
 
 	        Mage::getSingleton('checkout/cart')->truncate();
-	        Mage::getSingleton('checkout/session')->clear();
 
             return $order->getId();
         }

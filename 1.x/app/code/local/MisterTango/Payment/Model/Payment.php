@@ -15,7 +15,10 @@ class MisterTango_Payment_Model_Payment extends Mage_Payment_Model_Method_Abstra
         if (Mage::helper('mtpayment/data')->isStandardMode()) {
             return Mage::getUrl(
                 'mtpayment/information',
-                array('initpayment' => true)
+                array(
+                    '_secure' => true,
+                    'initpayment' => true
+                )
             );
         }
 
