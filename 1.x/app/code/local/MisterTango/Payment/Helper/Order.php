@@ -51,7 +51,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
                     ->save();
             }
 
-	        Mage::getSingleton('checkout/cart')->truncate();
+            Mage::getSingleton('checkout/cart')->truncate();
 
             return $order->getId();
         }
@@ -78,23 +78,29 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             }
         }
 
-        $payment = $order->getPayment();
-        $payment->setTransactionId($transactionId);
-        $payment->save();
-
         //@todo calculate total paid real from transactions
-        $totalPaidReal = $amount;
+        $totalPaidReal = bcdiv($amount, 1, 2);
 
         $state = Mage_Sales_Model_Order::STATE_HOLDED;
         $status = Mage::helper('mtpayment/data')->getStatusError();
 
-        if (bcdiv($order->getGrandTotal(), 1, 2) == bcdiv($totalPaidReal, 1, 2)) {
+        if (bcdiv($order->getGrandTotal(), 1, 2) == $totalPaidReal) {
             $state = Mage_Sales_Model_Order::STATE_PROCESSING;
             $status = Mage::helper('mtpayment/data')->getStatusSuccess();
         }
 
+        // Save transaction so client can track payments. Message is payment amount.
+        $payment = $order->getPayment();
+        $payment->setTransactionId($transactionId);
+        $payment->addTransaction(
+            Mage_Sales_Model_Order_Payment_Transaction::TYPE_ORDER,
+            null,
+            false,
+            Mage::app()->getLocale()->currency($order->getOrderCurrencyCode())->toCurrency($totalPaidReal)
+        );
+        $payment->save();
+
         //@todo generate invoice if possible
-        //@todo create proper transactions
         $order->setState($state, $status);
         $order->save();
     }
