@@ -1,5 +1,6 @@
 MTPayment = {
     isOpened: false,
+    isOfflinePayment: false,
     success: false,
     order: null,
     websocket: null,
@@ -15,6 +16,8 @@ MTPayment = {
             var target = e.target || e.srcElement;
 
             if (target.classList.contains('mtpayment-button-pay')) {
+                MTPayment.isOfflinePayment = false;
+
                 var websocket = target.getAttribute('data-websocket');
                 if (MTPayment.websocket != null && websocket.length > 0) {
                     MTPayment.websocket = websocket;
@@ -66,6 +69,7 @@ MTPayment = {
     },
     onOfflinePayment: function (response) {
         mrTangoCollect.onSuccess = function () {};
+        MTPayment.isOfflinePayment = true;
         MTPayment.onSuccess(response);
     },
     onSuccess: function (response) {
@@ -106,8 +110,13 @@ MTPayment = {
     },
     afterSuccess: function () {
         if (MTPayment.isOpened === false) {
-            var operator = MTPAYMENT_URL_REDIRECT.indexOf('?') === -1?'?':'&';
-            window.location.href = MTPAYMENT_URL_REDIRECT + operator + 'order=' + MTPayment.order;
+            var url = MTPAYMENT_URL_INFORMATION;
+            if (!MTPayment.isOfflinePayment && MTPAYMENT_IS_STANDARD_MODE) {
+                url = MTPAYMENT_URL_SUCCESS;
+            }
+
+            var operator = url.indexOf('?') === -1?'?':'&';
+            window.location.href = url + operator + 'order=' + MTPayment.order;
         }
     }
 };

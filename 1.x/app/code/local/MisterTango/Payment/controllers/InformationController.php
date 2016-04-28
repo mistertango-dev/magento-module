@@ -27,8 +27,11 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
             return;
         }
 
-        // Lets clear session if session quote is equal to specified order qoute and its not init payment stage
-        if ($session->getLastQuoteId() == $order->getQuoteId() && !$initPayment) {
+        // Lets clear session if session quote is equal to specified order qoute and standard redirect is not enabled
+        if (
+            $session->getLastQuoteId() == $order->getQuoteId()
+            && !Mage::helper('mtpayment/data')->isStandardRedirect()
+        ) {
             $session->clear();
         }
 

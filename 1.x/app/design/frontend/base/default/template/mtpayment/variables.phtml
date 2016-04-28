@@ -1,6 +1,8 @@
 <script>
     var MTPAYMENT_USERNAME = '<?php echo $this->getUsername(); ?>';
+    var MTPAYMENT_IS_STANDARD_MODE = '<?php echo (int)Mage::helper('mtpayment/data')->isStandardMode(); ?>';
     var MTPAYMENT_URL_ORDERS = '<?php echo $this->getUrl('mtpayment/orders', array('_secure' => true)); ?>';
-    var MTPAYMENT_URL_REDIRECT = '<?php echo $this->getRedirectUrl(); ?>';
+    var MTPAYMENT_URL_INFORMATION = '<?php echo Mage::helper('mtpayment/data')->getUrlInformation(); ?>';
+    var MTPAYMENT_URL_SUCCESS = '<?php echo Mage::helper('mtpayment/data')->getUrlSuccess(); ?>';
     var MTPAYMENT_URL_CHECKOUT = '<?php echo $this->getUrl('mtpayment/checkout', array('_secure' => true)); ?>';
 </script>

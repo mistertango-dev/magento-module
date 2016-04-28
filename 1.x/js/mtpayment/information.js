@@ -14,6 +14,10 @@ MTPayment.Information = {
                     if (order != null) {
                         order.innerHTML = response.html;
                     }
+
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    }
                 }
             }
         };

@@ -80,4 +80,20 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     {
         return Mage::getStoreConfig(self::XML_PATH_STATUS_ERROR);
     }
+
+    /**
+     * @return string
+     */
+    public function getUrlInformation()
+    {
+        return Mage::getUrl('mtpayment/information', array('_secure' => true));
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlSuccess()
+    {
+        return Mage::getUrl('checkout/onepage/success', array('_secure' => true));
+    }
 }

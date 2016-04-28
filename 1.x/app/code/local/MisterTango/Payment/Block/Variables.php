@@ -21,14 +21,4 @@ class MisterTango_Payment_Block_Variables extends Mage_Core_Block_Template
     {
         return Mage::helper('mtpayment/data')->getSecretKey();
     }
-
-    /**
-     * @return string
-     */
-    public function getRedirectUrl()
-    {
-        return Mage::helper('mtpayment/data')->isStandardRedirect()
-            ?Mage::getUrl('checkout/onepage/success', array('_secure' => true))
-            :Mage::getUrl('mtpayment/information', array('_secure' => true));
-    }
 }

@@ -6,7 +6,7 @@
     <a href="#"
        class="mtpayment-button-pay"
        data-websocket="<?php echo $this->getWebsocket($this->getOrder()->getId()); ?>"
-       data-language="<?php echo Mage::app()->getStore()->getLanguageCode(); ?>"
+       data-language="<?php echo Mage::app()->getStore()->getCode(); ?>"
        data-customer-email="<?php echo $this->getCustomerEmail(); ?>"
        data-order="<?php echo $this->getOrder()->getId(); ?>"
        data-amount="<?php echo number_format($this->getOrder()->getGrandTotal(), 2, '.', ''); ?>"

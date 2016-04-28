@@ -25,10 +25,10 @@
         <reference name="root">
             <reference name="head">
                 <action method="addCss">
-                    <stylesheet>css/mtpayment/mtpayment.css</stylesheet>
+                    <stylesheet>css/mtpayment/mtpayment.css?v=1.2.8</stylesheet>
                 </action>
                 <action method="addJs">
-                    <script>mtpayment/mtpayment.js</script>
+                    <script>mtpayment/mtpayment.js?v=1.2.8</script>
                 </action>
                 <block type="core/text" name="mtpayment.mtcollect">
                     <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
@@ -49,10 +49,10 @@
         <reference name="root">
             <reference name="head">
                 <action method="addJs">
-                    <script>mtpayment/mtpayment.js</script>
+                    <script>mtpayment/mtpayment.js?v=1.2.8</script>
                 </action>
                 <action method="addJs">
-                    <script>mtpayment/information.js</script>
+                    <script>mtpayment/information.js?v=1.2.8</script>
                 </action>
                 <block type="core/text" name="mtpayment.mtcollect">
                     <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
