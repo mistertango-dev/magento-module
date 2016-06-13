@@ -91,14 +91,16 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 
         // Save transaction so client can track payments. Message is payment amount.
         $payment = $order->getPayment();
-        $payment->setTransactionId($transactionId);
-        $payment->addTransaction(
-            Mage_Sales_Model_Order_Payment_Transaction::TYPE_ORDER,
-            null,
-            false,
-            Mage::app()->getLocale()->currency($order->getOrderCurrencyCode())->toCurrency($totalPaidReal)
-        );
-        $payment->save();
+        if (isset($payment)) {
+            $payment->setTransactionId($transactionId);
+            $payment->addTransaction(
+                Mage_Sales_Model_Order_Payment_Transaction::TYPE_ORDER,
+                null,
+                false,
+                Mage::app()->getLocale()->currency($order->getOrderCurrencyCode())->toCurrency($totalPaidReal)
+            );
+            $payment->save();
+        }
 
         //@todo generate invoice if possible
         $order->setState($state, $status);
