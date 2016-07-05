@@ -26,8 +26,8 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 
             $quote = Mage::getModel('sales/quote')->load($quoteId);
 
-            if (!$quote->getIsActive()) {
-                return $orderId;
+            if ($quote === null) {
+                Mage::logException('Quote is required to process MisterTango open order');
             }
 
             $quote
@@ -35,12 +35,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
                 ->setIsActive(false)
                 ->save();
 
-            $checkout = Mage::getSingleton('checkout/type_onepage');
-            $checkout
-                ->setQuote($quote)
-                ->saveOrder();
-
-            $order = Mage::getModel('sales/order')->load($checkout->getLastOrderId(), 'increment_id');
+            $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
 
             if (empty($orderId)) {
                 Mage::getModel('mtpayment/transaction')
@@ -90,7 +85,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
         }
 
         // Save transaction so client can track payments. Message is payment amount.
-        /*$payment = $order->getPayment();
+        $payment = $order->getPayment();
         if (isset($payment)) {
             $payment->setTransactionId($transactionId);
             $payment->addTransaction(
@@ -100,7 +95,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
                 Mage::app()->getLocale()->currency($order->getOrderCurrencyCode())->toCurrency($totalPaidReal)
             );
             $payment->save();
-        }*/
+        }
 
         //@todo generate invoice if possible
         $order->setState($state, $status);
