@@ -9,6 +9,8 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     const XML_PATH_SECRET_KEY = 'payment/mtpayment/mrtango_secret_key';
     const XML_PATH_STANDARD_MODE = 'payment/mtpayment/standard_mode';
     const XML_PATH_STANDARD_REDIRECT = 'payment/mtpayment/standard_redirect';
+    const XML_PATH_OVERRIDDEN_CALLBACK_URL = 'payment/mtpayment/overridden_callback_url';
+    const XML_PATH_CALLBACK_URL = 'payment/mtpayment/callback_url';
     const XML_PATH_STATUS_PENDING = 'payment/mtpayment/status_pending';
     const XML_PATH_STATUS_SUCCESS = 'payment/mtpayment/status_success';
     const XML_PATH_STATUS_ERROR = 'payment/mtpayment/status_error';
@@ -43,6 +45,31 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     public function isStandardRedirect()
     {
         return (bool)Mage::getStoreConfig(self::XML_PATH_STANDARD_REDIRECT);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOverriddenCallbackUrl()
+    {
+        return (bool)Mage::getStoreConfig(self::XML_PATH_OVERRIDDEN_CALLBACK_URL);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCallbackUrl()
+    {
+        $callbackUrl = Mage::getStoreConfig(self::XML_PATH_CALLBACK_URL);
+
+        if (!empty($callbackUrl)) {
+            return Mage::helper('mtpayment/utilities')->encrypt($callbackUrl, $this->getSecretKey());
+        }
+
+        return Mage::helper('mtpayment/utilities')->encrypt(
+            Mage::getUrl('mtpayment/callback', array('_secure' => true)),
+            $this->getSecretKey()
+        );
     }
 
     /**

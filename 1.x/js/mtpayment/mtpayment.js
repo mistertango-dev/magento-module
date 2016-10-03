@@ -62,6 +62,10 @@ MTPayment = {
         mrTangoCollect.set.description(MTPayment.transaction);
         mrTangoCollect.set.lang(MTPayment.language);
 
+        if (MTPAYMENT_IS_OVERRIDDEN_CALLBACK_URL) {
+            mrTangoCollect.custom = {'callback': MTPAYMENT_CALLBACK_URL};
+        }
+
         mrTangoCollect.submit();
     },
     onOpen: function () {
