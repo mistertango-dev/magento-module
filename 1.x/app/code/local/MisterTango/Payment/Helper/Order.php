@@ -9,6 +9,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
      * @param $transactionId
      * @param $amount
      * @param null $websocket
+     *
      * @return bool|mixed
      */
     public function open($transactionId, $amount, $websocket = null)
@@ -57,6 +58,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
     /**
      * @param $transactionId
      * @param $amount
+     *
      * @throws Exception
      */
     public function close($transactionId, $amount)
@@ -78,26 +80,38 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 
         $state = Mage_Sales_Model_Order::STATE_HOLDED;
         $status = Mage::helper('mtpayment/data')->getStatusError();
-
-        if (bcdiv($order->getGrandTotal(), 1, 2) == $totalPaidReal) {
-            $state = Mage_Sales_Model_Order::STATE_PROCESSING;
-            $status = Mage::helper('mtpayment/data')->getStatusSuccess();
-        }
+        $message = Mage::app()->getLocale()->currency($order->getOrderCurrencyCode())->toCurrency($totalPaidReal);
 
         // Save transaction so client can track payments. Message is payment amount.
-        /*$payment = $order->getPayment();
-        if (isset($payment)) {
+        $payment = $order->getPayment();
+        if (
+            isset($payment)
+            && is_callable(array($payment, 'setTransactionId'))
+            && is_callable(array($payment, 'addTransaction'))
+        ) {
             $payment->setTransactionId($transactionId);
             $payment->addTransaction(
                 Mage_Sales_Model_Order_Payment_Transaction::TYPE_ORDER,
                 null,
                 false,
-                Mage::app()->getLocale()->currency($order->getOrderCurrencyCode())->toCurrency($totalPaidReal)
+                $message
             );
             $payment->save();
-        }*/
+        }
 
-        //@todo generate invoice if possible
+        // If everything is correct, set state and create invoice
+        if (bcdiv($order->getGrandTotal(), 1, 2) == $totalPaidReal) {
+            $state = Mage_Sales_Model_Order::STATE_PROCESSING;
+            $status = Mage::helper('mtpayment/data')->getStatusSuccess();
+
+            // Save invoice
+            $invoice = $order->prepareInvoice();
+            $invoice->setGrandTotal($totalPaidReal);
+            $invoice->pay();
+            $invoice->save();
+        }
+
+        // Save order
         $order->setState($state, $status);
         $order->save();
     }
