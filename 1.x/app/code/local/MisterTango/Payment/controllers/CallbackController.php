@@ -17,11 +17,18 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
 
         $hash = $this->getRequest()->getParam('hash');
 
+        $hash = true;
+
         if ($hash !== false) {
             $data = json_decode(
                 Mage::helper('mtpayment/utilities')->decrypt($hash, Mage::helper('mtpayment/data')->getSecretKey())
             );
             $data->custom = isset($data->custom) ? json_decode($data->custom) : null;
+
+            $data->callback_uuid = uniqid();
+            $data->custom = new stdClass();
+            $data->custom->description = '47_1476874402';
+            $data->custom->data->amount = '37.69';
 
             if (isset($data->custom) && isset($data->custom->description)) {
 

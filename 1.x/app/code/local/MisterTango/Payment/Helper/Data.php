@@ -12,8 +12,6 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     const XML_PATH_OVERRIDDEN_CALLBACK_URL = 'payment/mtpayment/overridden_callback_url';
     const XML_PATH_CALLBACK_URL = 'payment/mtpayment/callback_url';
     const XML_PATH_STATUS_PENDING = 'payment/mtpayment/status_pending';
-    const XML_PATH_STATUS_SUCCESS = 'payment/mtpayment/status_success';
-    const XML_PATH_STATUS_ERROR = 'payment/mtpayment/status_error';
 
     /**
      * @return mixed
@@ -62,7 +60,7 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     {
         $callbackUrl = Mage::getStoreConfig(self::XML_PATH_CALLBACK_URL);
 
-        if (!empty($callbackUrl)) {
+        if ($this->isOverriddenCallbackUrl() && !empty($callbackUrl)) {
             return Mage::helper('mtpayment/utilities')->encrypt($callbackUrl, $this->getSecretKey());
         }
 
@@ -90,22 +88,6 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     public function getStatusPending()
     {
         return Mage::getStoreConfig(self::XML_PATH_STATUS_PENDING);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatusSuccess()
-    {
-        return Mage::getStoreConfig(self::XML_PATH_STATUS_SUCCESS);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatusError()
-    {
-        return Mage::getStoreConfig(self::XML_PATH_STATUS_ERROR);
     }
 
     /**
