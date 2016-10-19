@@ -100,7 +100,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 		}
 
 		// If everything is correct, set state and create invoice
-		if (bcdiv($order->getGrandTotal(), 1, 2) == $totalPaidReal) {
+		if (bcdiv($order->getTotalDue(), 1, 2) == $totalPaidReal) {
 			$state = Mage_Sales_Model_Order::STATE_PROCESSING;
 			$status = Mage::helper('mtpayment/data')->getStatusSuccess();
 		}
