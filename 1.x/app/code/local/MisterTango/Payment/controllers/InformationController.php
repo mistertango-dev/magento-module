@@ -27,6 +27,18 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
             return;
         }
 
+        // If its initPayment then send new order email
+        if ($initPayment) {
+            $payment = $order->getPayment();
+            if ($payment && $order->getCanSendNewEmailFlag()) {
+                try {
+                    $order->queueNewOrderEmail();
+                } catch (Exception $e) {
+
+                }
+            }
+        }
+
         // Lets clear session if session quote is equal to specified order qoute and standard redirect is not enabled
         if (
             $session->getLastQuoteId() == $order->getQuoteId()
