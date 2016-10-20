@@ -31,6 +31,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
                 Mage::logException('Quote is required to process MisterTango open order');
             }
 
+            $quote->getPayment();
             $quote
                 ->collectTotals()
                 ->setIsActive(false)
