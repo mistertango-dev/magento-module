@@ -87,6 +87,11 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
         );
 
 	    $payment = $order->getPayment();
+
+        if (empty($payment)) {
+            Mage::logException('Order must have a valid payment');
+        }
+
 	    $payment
 		    ->setTransactionId($transactionId)
             ->setPreparedMessage($message)
