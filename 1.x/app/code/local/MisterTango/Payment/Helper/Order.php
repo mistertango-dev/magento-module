@@ -42,7 +42,12 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 
             $payment = $quote->getPayment();
 
-            if ($payment && Mage::helper('mtpayment/data')->isStandardMode() && $order->getCanSendNewEmailFlag()) {
+            if (
+                $payment
+                && Mage::helper('mtpayment/data')->isStandardMode()
+                && $order->getEmailSent() != '1'
+                && $order->getCanSendNewEmailFlag()
+            ) {
                 try {
                     $order->sendNewOrderEmail();
                 } catch (Exception $e) {

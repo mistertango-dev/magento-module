@@ -27,18 +27,6 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
             return;
         }
 
-        // If its initPayment then send new order email
-        if ($initPayment) {
-            $payment = $order->getPayment();
-            if ($payment && $order->getCanSendNewEmailFlag()) {
-                try {
-                    $order->queueNewOrderEmail();
-                } catch (Exception $e) {
-
-                }
-            }
-        }
-
         // Lets clear session if session quote is equal to specified order qoute and standard redirect is not enabled
         if (
             $session->getLastQuoteId() == $order->getQuoteId()
@@ -55,5 +43,14 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
         $block->setInitPayment($initPayment);
 
         $this->renderLayout();
+
+        // Lets send email right after layout is being rendered, because sometimes it messes it up
+        if ($initPayment) {
+            $payment = $order->getPayment();
+            if ($payment && $order->getEmailSent() != '1' && $order->getCanSendNewEmailFlag()) {
+                $order->sendNewOrderEmail();
+                $order->save();
+            }
+        }
     }
 }

@@ -1,77 +1,120 @@
 <?php
 
 /**
- * Class MisterTango_Payment_Block_Button
+ * Class MisterTango_Payment_Block_Order
  */
-class MisterTango_Payment_Block_Button extends Mage_Core_Block_Template
+class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
 {
+
+    /**
+     * @var
+     */
+    private $order;
+
+    /**
+     * @var bool
+     */
+    private $initPayment = false;
+
+    /**
+     *
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param $initPayment
+     *
+     * @return $this
+     */
+    public function setInitPayment($initPayment)
+    {
+        $this->initPayment = (bool)$initPayment;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isInitPayment()
+    {
+        return $this->initPayment;
+    }
 
     /**
      * @return mixed
      */
     public function getCustomerEmail()
     {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-
-        $email = $quote
-            ->getBillingAddress()
-            ->getEmail();
-
-        if (empty($email)) {
-            $email = $quote->getCustomerEmail();
+        if (empty($this->order)) {
+            return null;
         }
 
+        $quote = Mage::getModel('sales/quote')->load($this->order->getQuoteId());
+
+        $email = $quote->getBillingAddress()->getEmail();
+
         if (empty($email)) {
-            $email = $quote
-                ->getShippingAddress()
-                ->getEmail();
+            $email = $this->order->getCustomerEmail();
         }
 
         return $email;
     }
 
     /**
-     * @return string
-     */
-    public function getCurrentCurrencyIsoCode()
-    {
-        return Mage::app()->getStore()->getCurrentCurrencyCode();
-    }
-
-    /**
+     * @param $orderId
+     *
      * @return mixed
      */
-    public function getTransactionId()
+    public function getWebsocket($orderId)
     {
-        return Mage::helper('mtpayment/data')->generateTransactionId();
+        return Mage::getModel('mtpayment/transaction')
+                   ->getCollection()
+                   ->addFieldToFilter('order_id', $orderId)
+                   ->getFirstItem()
+                   ->getWebsocket();
     }
 
     /**
-     * @param bool|false $formatted
-     * @return mixed
+     * @param $orderId
+     *
+     * @return bool
      */
-    public function getGrandTotal($formatted = false)
+    public function isPaid($orderId)
     {
-        $grandTotal = Mage::helper('checkout/cart')->getQuote()->getGrandTotal();
+        $transactionId = Mage::getModel('mtpayment/transaction')
+                             ->getCollection()
+                             ->addFieldToFilter('order_id', $orderId)
+                             ->getFirstItem()
+                             ->getTransactionId();
 
-        return $formatted?Mage::helper('core')->formatPrice($grandTotal, false):$grandTotal;
-    }
-
-    /**
-     * @return string
-     */
-    protected function _toHtml()
-    {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        if ($quote) {
-            $payment = $quote->getPayment();
-            $isIWDOPC = (bool)Mage::getStoreConfig('opc/global/status');
-            $isStandardMode = Mage::helper('mtpayment/data')->isStandardMode();
-            if ($payment && $payment->getMethod() == 'mtpayment' && !$isIWDOPC && !$isStandardMode) {
-                $this->setTemplate('mtpayment/onepage/review/button.phtml');
-            }
+        if (empty($transactionId)) {
+            return false;
         }
 
-        return parent::_toHtml();
+        $callbackUuid = Mage::getModel('mtpayment/callback')
+                            ->getCollection()
+                            ->addFieldToFilter('transaction_id', $transactionId)
+                            ->getFirstItem()
+                            ->getCallbackUuid();
+
+        if (empty($callbackUuid)) {
+            return false;
+        }
+
+        return true;
     }
 }
