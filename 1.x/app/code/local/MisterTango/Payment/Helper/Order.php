@@ -20,6 +20,10 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             ->getFirstItem()
             ->getOrderId();
 
+        if ($orderId) {
+            return $orderId;
+        }
+
         $transaction = explode('_', $transactionId);
 
         if (count($transaction) == 2) {
@@ -31,29 +35,36 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
                 Mage::logException('Quote is required to process MisterTango open order');
             }
 
-            $quote->getPayment();
-            $quote
-                ->collectTotals()
-                ->setIsActive(false)
-                ->save();
+            $service = Mage::getModel('sales/service_quote', $quote);
+            $service->submitAll();
 
-            $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
+            $order = $service->getOrder();
 
-            if (empty($orderId)) {
-                Mage::getModel('mtpayment/transaction')
-                    ->setId($transactionId)
-                    ->setData('amount', $amount)
-                    ->setData('order_id', $order->getId())
-                    ->setData('websocket', $websocket)
-                    ->save();
+            $payment = $quote->getPayment();
+
+            if ($payment && Mage::helper('mtpayment/data')->isStandardMode() && $order->getCanSendNewEmailFlag()) {
+                try {
+                    $order->sendNewOrderEmail();
+                } catch (Exception $e) {
+                    Mage::logException($e);
+                }
             }
+
+            Mage::getModel('mtpayment/transaction')
+                ->setId($transactionId)
+                ->setData('amount', $amount)
+                ->setData('order_id', $order->getId())
+                ->setData('websocket', $websocket)
+                ->save();
 
             Mage::getSingleton('checkout/cart')->truncate();
 
             return $order->getId();
         }
 
-        return $orderId;
+        Mage::logException('Unable to determinate order ID');
+
+        return null;
     }
 
     /**
@@ -67,14 +78,6 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
         $orderId = $this->open($transactionId, $amount);
 
         $order = Mage::getModel('sales/order')->load($orderId);
-
-        if ($order && Mage::helper('mtpayment/data')->isStandardMode() && $order->getCanSendNewEmailFlag()) {
-            try {
-                $order->sendNewOrderEmail();
-            } catch (Exception $e) {
-                Mage::logException($e);
-            }
-        }
 
         $totalPaidReal = bcdiv($amount, 1, 2);
 
