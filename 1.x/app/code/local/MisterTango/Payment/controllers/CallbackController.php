@@ -16,8 +16,8 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
 
         $hash = $this->getRequest()->getParam('hash');
 
-        if ($hash === false) {
-            die('Error occurred: Bad hash');
+        if (empty($hash)) {
+            die('Error occurred: Empty hash');
         }
 
         $data = json_decode(
