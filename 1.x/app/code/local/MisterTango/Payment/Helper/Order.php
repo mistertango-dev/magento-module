@@ -10,7 +10,8 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
      * @param $amount
      * @param null $websocket
      *
-     * @return bool|mixed
+     * @return mixed
+     * @throws Exception
      */
     public function open($transactionId, $amount, $websocket = null)
     {
@@ -32,7 +33,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             $quote = Mage::getModel('sales/quote')->load($quoteId);
 
             if ($quote === null) {
-                Mage::logException('Quote is required to process MisterTango open order');
+                throw new Exception('Quote is required to process MisterTango open order');
             }
 
             $service = Mage::getModel('sales/service_quote', $quote);
@@ -67,9 +68,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             return $order->getId();
         }
 
-        Mage::logException('Unable to determinate order ID');
-
-        return null;
+        throw new Exception('Unable to determinate order ID');
     }
 
     /**
@@ -94,7 +93,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 	    $payment = $order->getPayment();
 
         if (empty($payment)) {
-            Mage::logException('Order must have a valid payment');
+            throw new Exception('Order must have a valid payment');
         }
 
 	    $payment

@@ -5,7 +5,6 @@
  */
 class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_Action
 {
-
     /**
      *
      */
@@ -17,39 +16,47 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
 
         $hash = $this->getRequest()->getParam('hash');
 
-        if ($hash !== false) {
-            $data = json_decode(
-                Mage::helper('mtpayment/utilities')->decrypt($hash, Mage::helper('mtpayment/data')->getSecretKey())
-            );
-            $data->custom = isset($data->custom) ? json_decode($data->custom) : null;
+        if ($hash === false) {
+            die('Error occurred: Bad hash');
+        }
 
-            if (isset($data->custom) && isset($data->custom->description)) {
+        $data = json_decode(
+            Mage::helper('mtpayment/utilities')->decrypt(
+                $hash,
+                Mage::helper('mtpayment/data')->getSecretKey()
+            )
+        );
+        $data->custom = isset($data->custom) ? json_decode($data->custom) : null;
 
-                $transaction = explode('_', $data->custom->description);
+        if (empty($data->custom) || empty($data->custom->description)) {
+            die('Error occurred: Custom description is empty');
+        }
 
-                if (count($transaction) == 2) {
-                    $callback = Mage::getModel('mtpayment/callback')->load($data->callback_uuid);
+        $transaction = explode('_', $data->custom->description);
 
-                    if ($callback->isEmpty()) {
-                        try {
-                            $transactionId = implode('_', $transaction);
+        if (count($transaction) != 2) {
+            die('Error occurred: Transaction code is incorrect');
+        }
 
-                            Mage::helper('mtpayment/order')->close(
-                                $transactionId,
-                                $data->custom->data->amount
-                            );
-                        } catch (Exception $e) {
-                            return;
-                        }
+        $callback = Mage::getModel('mtpayment/callback')->load($data->callback_uuid);
 
-                        $callback
-                            ->setId($data->callback_uuid)
-                            ->setData('transaction_id', $data->custom->description)
-                            ->setData('amount', $data->custom->data->amount)
-                            ->save();
-                    }
-                }
+        if ($callback->isEmpty()) {
+            try {
+                $transactionId = implode('_', $transaction);
+
+                Mage::helper('mtpayment/order')->close(
+                    $transactionId,
+                    $data->custom->data->amount
+                );
+            } catch (Exception $e) {
+                die('Error occurred: '.$e->getMessage());
             }
+
+            $callback
+                ->setId($data->callback_uuid)
+                ->setData('transaction_id', $data->custom->description)
+                ->setData('amount', $data->custom->data->amount)
+                ->save();
         }
     }
 }

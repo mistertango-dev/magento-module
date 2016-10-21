@@ -115,9 +115,10 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
             $lastQuoteId = $session->getLastQuoteId();
             $lastOrderId = $session->getLastOrderId();
             $lastRecurringProfiles = $session->getLastRecurringProfileIds();
+
             if (
                 ($lastQuoteId || ($lastOrderId && !empty($lastRecurringProfiles)))
-                && $order->getStatus() == Mage::helper('mtpayment/data')->getStatusSuccess()
+                && $order->getTotalPaid() > 0
                 && Mage::helper('mtpayment/data')->isStandardRedirect()
             ) {
                 $redirect = Mage::helper('mtpayment/data')->getUrlSuccess();
