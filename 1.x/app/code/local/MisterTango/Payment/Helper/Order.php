@@ -105,14 +105,8 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 	    $order->save();
 
 	    $invoice = $payment->getCreatedInvoice();
-	    if ($invoice && !$order->getEmailSent()) {
-		    $order
-			    ->queueNewOrderEmail()
-			    ->addStatusHistoryComment(
-				    Mage::helper('mtpayment')->__('Notified customer about invoice #%s.', $invoice->getIncrementId())
-			    )
-			    ->setIsCustomerNotified(true)
-			    ->save();
-	    }
+        if ($invoice) {
+	        $invoice->sendEmail();
+        }
     }
 }

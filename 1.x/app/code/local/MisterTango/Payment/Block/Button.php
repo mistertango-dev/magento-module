@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class MisterTango_Payment_Block_Order
+ * Class MisterTango_Payment_Block_Button
  */
-class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
+class MisterTango_Payment_Block_Button extends Mage_Core_Block_Template
 {
 
     /**
