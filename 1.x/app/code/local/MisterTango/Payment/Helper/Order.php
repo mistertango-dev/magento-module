@@ -36,7 +36,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
                 throw new Exception('Quote is required to process MisterTango open order');
             }
 
-            $service = Mage::getModel('sales/service_quote', $quote);
+            $service = Mage::getModel('sales/service_quote', $quote->collectTotals());
             $service->submitAll();
 
             $order = $service->getOrder();
