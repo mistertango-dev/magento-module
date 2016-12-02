@@ -31,7 +31,7 @@
                     <script>mtpayment/mtpayment.js?v=1.2.8</script>
                 </action>
                 <block type="core/text" name="mtpayment.mtcollect">
-                    <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
+                    <action method="setText"><text><![CDATA[<script src="https://payment.mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
                 </block>
                 <block type="mtpayment/variables" name="mtpayment.variables" template="mtpayment/variables.phtml" />
             </reference>
@@ -55,7 +55,7 @@
                     <script>mtpayment/information.js?v=1.2.8</script>
                 </action>
                 <block type="core/text" name="mtpayment.mtcollect">
-                    <action method="setText"><text><![CDATA[<script src="https://mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
+                    <action method="setText"><text><![CDATA[<script src="https://payment.mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
                 </block>
                 <block type="mtpayment/variables" name="mtpayment.variables" template="mtpayment/variables.phtml" />
             </reference>
