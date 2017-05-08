@@ -66,12 +66,20 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
                 return;
             }
 
-            Mage::getModel('mtpayment/transaction')
-                ->setId($transactionId)
-                ->setData('amount', $amount)
-                ->setData('order_id', $orderId)
-                ->setData('websocket', $websocket)
-                ->save();
+	        $transactionId = Mage::getModel('mtpayment/transaction')
+	            ->getCollection()
+	            ->addFieldToFilter('transaction_id', $transactionId)
+	            ->getFirstItem()
+	            ->getId();
+
+            if (!$transactionId) {
+	            Mage::getModel('mtpayment/transaction')
+	                ->setId($transactionId)
+	                ->setData('amount', $amount)
+	                ->setData('order_id', $orderId)
+	                ->setData('websocket', $websocket)
+	                ->save();
+            }
 
             $this->getResponse()->setBody(
                 Mage::helper('core')->jsonEncode(array(

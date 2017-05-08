@@ -11,7 +11,7 @@
        data-order="<?php echo $this->getOrder()->getId(); ?>"
        data-amount="<?php echo number_format($this->getOrder()->getGrandTotal(), 2, '.', ''); ?>"
        data-currency="<?php echo Mage::app()->getStore()->getCurrentCurrencyCode(); ?>"
-       data-transaction="<?php echo Mage::helper('mtpayment/data')->generateTransactionId($this->getOrder()->getQuoteId()); ?>">
+       data-transaction="<?php echo Mage::helper('mtpayment/data')->getTransactionId($this->getOrder()->getQuoteId()); ?>">
         <?php echo $this->__('click here'); ?>
     </a>
     <?php endif; ?>

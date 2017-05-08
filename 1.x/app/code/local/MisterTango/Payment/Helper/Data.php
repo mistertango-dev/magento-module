@@ -73,13 +73,13 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     /**
      * @return string
      */
-    public function generateTransactionId($quoteId = null)
+    public function getTransactionId($quoteId = null)
     {
         if (empty($quoteId)) {
             $quoteId = Mage::getSingleton('checkout/session')->getQuoteId();
         }
 
-        return $quoteId . '_' . time();
+        return $quoteId;
     }
 
     /**

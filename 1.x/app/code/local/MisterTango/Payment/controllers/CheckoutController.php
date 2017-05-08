@@ -13,7 +13,7 @@ class MisterTango_Payment_CheckoutController extends Mage_Core_Controller_Front_
     {
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
-            $transaction = Mage::helper('mtpayment/data')->generateTransactionId();
+            $transaction = Mage::helper('mtpayment/data')->getTransactionId();
             $customerEmail = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getEmail();
             $amount = number_format(Mage::helper('checkout/cart')->getQuote()->getGrandTotal(), 2, '.', '');
             $currency = Mage::app()->getStore()->getCurrentCurrencyCode();
