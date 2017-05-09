@@ -25,12 +25,8 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             return $orderId;
         }
 
-        $transaction = explode('_', $transactionId);
-
-        if (count($transaction) == 2) {
-            $quoteId = $transaction[0];
-
-            $quote = Mage::getModel('sales/quote')->load($quoteId);
+        if ($transactionId) {
+            $quote = Mage::getModel('sales/quote')->load($transactionId);
 
             if ($quote === null) {
                 throw new Exception('Quote is required to process MisterTango open order');

@@ -32,20 +32,12 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
             die('Error occurred: Custom description is empty');
         }
 
-        $transaction = explode('_', $data->custom->description);
-
-        if (count($transaction) != 2) {
-            die('Error occurred: Transaction code is incorrect');
-        }
-
         $callback = Mage::getModel('mtpayment/callback')->load($data->callback_uuid);
 
         if ($callback->isEmpty()) {
             try {
-                $transactionId = implode('_', $transaction);
-
                 Mage::helper('mtpayment/order')->close(
-                    $transactionId,
+	                $data->custom->description,
                     $data->custom->data->amount
                 );
             } catch (Exception $e) {
