@@ -49,7 +49,7 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
         $isAjax = Mage::app()->getRequest()->isAjax();
         if ($isAjax) {
             $orderId = $this->getRequest()->getParam('order');
-            $transactionId = $this->getRequest()->getParam('transaction');
+            $currentTransactionId = $this->getRequest()->getParam('transaction');
             $websocket = $this->getRequest()->getParam('websocket');
             $amount = $this->getRequest()->getParam('amount');
 
@@ -66,15 +66,15 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
                 return;
             }
 
-	        $transactionId = Mage::getModel('mtpayment/transaction')
+	        $existingTransactionId = Mage::getModel('mtpayment/transaction')
 	            ->getCollection()
-	            ->addFieldToFilter('transaction_id', $transactionId)
+	            ->addFieldToFilter('transaction_id', $currentTransactionId)
 	            ->getFirstItem()
 	            ->getId();
 
-            if (!$transactionId) {
+            if (!$existingTransactionId) {
 	            Mage::getModel('mtpayment/transaction')
-	                ->setId($transactionId)
+	                ->setId($currentTransactionId)
 	                ->setData('amount', $amount)
 	                ->setData('order_id', $orderId)
 	                ->setData('websocket', $websocket)
