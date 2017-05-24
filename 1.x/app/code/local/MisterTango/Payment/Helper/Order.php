@@ -46,11 +46,11 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 	    $reservedOrderId = $quote->getReservedOrderId();
 	    if ($reservedOrderId) {
 	        $order = $salesOrderModel->loadByIncrementId($reservedOrderId);
-	    }
 
-	    // If order is previously created, then return its ID
-	    if ($order instanceof Mage_Sales_Model_Order) {
-	    	return $order->getId();
+		    // If order is previously created, then return its ID
+		    if ($order instanceof Mage_Sales_Model_Order) {
+			    return $order->getId();
+		    }
 	    }
 
 	    // If we reached this point its obvious that order is not present, so we create it
