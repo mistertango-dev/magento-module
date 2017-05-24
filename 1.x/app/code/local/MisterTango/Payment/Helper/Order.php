@@ -25,46 +25,67 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             return $orderId;
         }
 
+        $quote = null;
+        $order = null;
         if ($transactionId) {
-            $quote = Mage::getModel('sales/quote')->load($transactionId);
-
-            if ($quote === null) {
-                throw new Exception('Quote is required to process MisterTango open order');
-            }
-
-            $service = Mage::getModel('sales/service_quote', $quote->collectTotals());
-            $service->submitAll();
-
-            $order = $service->getOrder();
-
-            $payment = $quote->getPayment();
-
-            if (
-                $payment
-                && Mage::helper('mtpayment/data')->isStandardMode()
-                && $order->getEmailSent() != '1'
-                && $order->getCanSendNewEmailFlag()
-            ) {
-                try {
-                    $order->sendNewOrderEmail();
-                } catch (Exception $e) {
-                    Mage::logException($e);
-                }
-            }
-
-            Mage::getModel('mtpayment/transaction')
-                ->setId($transactionId)
-                ->setData('amount', $amount)
-                ->setData('order_id', $order->getId())
-                ->setData('websocket', $websocket)
-                ->save();
-
-            Mage::getSingleton('checkout/cart')->truncate();
-
-            return $order->getId();
+	        $quote = Mage::getModel('sales/quote')->load($transactionId);
         }
 
-        throw new Exception('Unable to determinate order ID');
+        // Do not go further if non existing quote is present
+	    if (!$quote instanceof Mage_Sales_Model_Quote) {
+		    throw new Exception('Quote is required to process MisterTango open order');
+	    }
+
+	    // Lets double check if order exists
+	    $reservedOrderId = $quote->getReservedOrderId();
+	    if ($reservedOrderId) {
+	        $order = Mage::getModel('sales/order')->loadByIncrementId($reservedOrderId);
+	    }
+
+	    // If order is previously created, then return its ID
+	    if ($order instanceof Mage_Sales_Model_Order) {
+	    	return $order->getId();
+	    }
+
+	    // If we reached this point its obvious that order is not present, so we create it
+	    $service = Mage::getModel('sales/service_quote', $quote->collectTotals());
+	    $service->submitAll();
+	    $quote = $service->getQuote();
+	    $order = $service->getOrder();
+
+	    // If order cannot be created prevent system from further processing
+	    if (!$order instanceof Mage_Sales_Model_Order) {
+		    throw new Exception('Unable to retrieve order ID');
+	    }
+
+	    // Send an email to a customer (This is required, because Magento wont send emails if redirect url is present)
+	    $payment = $quote->getPayment();
+	    if (
+	        $payment
+	        && Mage::helper('mtpayment/data')->isStandardMode()
+	        && $order->getEmailSent() != '1'
+	        && $order->getCanSendNewEmailFlag()
+	    ) {
+	        try {
+	            $order->sendNewOrderEmail();
+	        } catch (Exception $e) {
+	            Mage::logException($e);
+	        }
+	    }
+
+	    // Save transaction, because if transaction would be present, then order ID would have been returned earlier
+	    Mage::getModel('mtpayment/transaction')
+	        ->setId($transactionId)
+	        ->setData('amount', $amount)
+	        ->setData('order_id', $order->getId())
+	        ->setData('websocket', $websocket)
+	        ->save();
+
+	    // Lets save quote and clear cart if possible
+	    $quote->save();
+	    Mage::getSingleton('checkout/cart')->truncate();
+
+	    return $order->getId();
     }
 
     /**
