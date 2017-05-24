@@ -21,9 +21,15 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
             ->getFirstItem()
             ->getOrderId();
 
-        if ($orderId) {
-            return $orderId;
-        }
+	    $salesOrderModel = Mage::getModel('sales/order');
+
+	    // Return order id only if order really exists
+	    if ($orderId) {
+		    $order = $salesOrderModel->load($orderId);
+		    if ($order instanceof Mage_Sales_Model_Order) {
+			    return $order->getId();
+		    }
+	    }
 
         $quote = null;
         $order = null;
@@ -39,7 +45,7 @@ class MisterTango_Payment_Helper_Order extends Mage_Core_Helper_Abstract
 	    // Lets double check if order exists
 	    $reservedOrderId = $quote->getReservedOrderId();
 	    if ($reservedOrderId) {
-	        $order = Mage::getModel('sales/order')->loadByIncrementId($reservedOrderId);
+	        $order = $salesOrderModel->loadByIncrementId($reservedOrderId);
 	    }
 
 	    // If order is previously created, then return its ID
