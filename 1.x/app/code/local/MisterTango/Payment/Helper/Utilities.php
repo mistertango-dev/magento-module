@@ -15,7 +15,7 @@ class MisterTango_Payment_Helper_Utilities extends Mage_Core_Helper_Abstract
     {
         $key = str_pad($key, 32, "\0");
 
-        $plain_text = trim( $plain_text );
+        $plain_text = trim($plain_text);
         # create a random IV to use with CBC encoding
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
@@ -31,7 +31,7 @@ class MisterTango_Payment_Helper_Utilities extends Mage_Core_Helper_Abstract
 
         # encode the resulting cipher text so it can be represented by a string
         $sResult = base64_encode($ciphertext);
-        return trim( $sResult );
+        return trim($sResult);
     }
 
     /**

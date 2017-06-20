@@ -5,6 +5,9 @@
  */
 class MisterTango_Payment_Model_Payment extends Mage_Payment_Model_Method_Abstract
 {
+    /**
+     * @var string
+     */
     protected $_code = 'mtpayment';
 
     /**
@@ -12,16 +15,6 @@ class MisterTango_Payment_Model_Payment extends Mage_Payment_Model_Method_Abstra
      */
     public function getOrderPlaceRedirectUrl()
     {
-        if (Mage::helper('mtpayment/data')->isStandardMode()) {
-            return Mage::getUrl(
-                'mtpayment/information',
-                array(
-                    '_secure' => true,
-                    'initpayment' => true
-                )
-            );
-        }
-
-        return '#mtpayment';
+        return Mage::getUrl('mtpayment/information', array('_secure' => true, 'initpayment' => true));
     }
 }

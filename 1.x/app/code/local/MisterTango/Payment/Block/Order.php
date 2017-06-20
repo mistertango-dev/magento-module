@@ -81,6 +81,8 @@ class MisterTango_Payment_Block_Order extends Mage_Core_Block_Template
     }
 
     /**
+     * @todo: this method should be reviewed
+     *
      * @param $orderId
      * @return bool
      */

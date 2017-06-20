@@ -1,58 +1,14 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * @category    design
- * @package     base_default
- * @copyright   Copyright (c) 2013 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
 
--->
 <layout version="0.8.0">
-    <checkout_onepage_index>
-        <reference name="root">
-            <reference name="head">
-                <action method="addCss">
-                    <stylesheet>css/mtpayment/mtpayment.css?v=1.3.5</stylesheet>
-                </action>
-                <action method="addJs">
-                    <script>mtpayment/mtpayment.js?v=1.3.5</script>
-                </action>
-                <block type="core/text" name="mtpayment.mtcollect">
-                    <action method="setText"><text><![CDATA[<script src="https://payment.mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>
-                </block>
-                <block type="mtpayment/variables" name="mtpayment.variables" template="mtpayment/variables.phtml" />
-            </reference>
-        </reference>
-    </checkout_onepage_index>
-    <checkout_onepage_review>
-        <reference name="root">
-            <block type="mtpayment/button" name="checkout.onepage.review.button" as="button" template="checkout/onepage/review/button.phtml"/>
-        </reference>
-        <reference name="checkout.onepage.review.button">
-            <action method="setTemplate" ifconfig="opc/global/status"><template>opc/onepage/review/button.phtml</template></action>
-        </reference>
-    </checkout_onepage_review>
     <mtpayment_information_index>
         <reference name="root">
             <reference name="head">
                 <action method="addJs">
-                    <script>mtpayment/mtpayment.js?v=1.3.5</script>
+                    <script>mtpayment/mtpayment.js?v=1.4.0</script>
                 </action>
                 <action method="addJs">
-                    <script>mtpayment/information.js?v=1.3.5</script>
+                    <script>mtpayment/information.js?v=1.4.0</script>
                 </action>
                 <block type="core/text" name="mtpayment.mtcollect">
                     <action method="setText"><text><![CDATA[<script src="https://payment.mistertango.com/resources/scripts/mt.collect.js"></script>]]></text></action>

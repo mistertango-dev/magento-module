@@ -5,42 +5,6 @@
  */
 class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Action
 {
-
-    /**
-     *
-     */
-    public function validateOrderAction()
-    {
-        $isAjax = Mage::app()->getRequest()->isAjax();
-        if ($isAjax) {
-            $transactionId = $this->getRequest()->getParam('transaction');
-            $websocket = $this->getRequest()->getParam('websocket');
-            $amount = $this->getRequest()->getParam('amount');
-
-            $orderId = Mage::helper('mtpayment/order')->open($transactionId, $amount, $websocket);
-
-            if (isset($orderId)) {
-                $this->getResponse()->setBody(
-                    Mage::helper('core')->jsonEncode(array(
-                        'success' => true,
-                        'order' => $orderId
-                    ))
-                );
-
-                return;
-            }
-
-            $this->getResponse()->setBody(
-                Mage::helper('core')->jsonEncode(array(
-                    'success' => false,
-                    'error' => $this->__('Invalid transaction')
-                ))
-            );
-
-            return;
-        }
-    }
-
     /**
      *
      */
@@ -124,11 +88,7 @@ class MisterTango_Payment_OrdersController extends Mage_Core_Controller_Front_Ac
             $lastOrderId = $session->getLastOrderId();
             $lastRecurringProfiles = $session->getLastRecurringProfileIds();
 
-            if (
-                ($lastQuoteId || ($lastOrderId && !empty($lastRecurringProfiles)))
-                && $order->getTotalPaid() > 0
-                && Mage::helper('mtpayment/data')->isStandardRedirect()
-            ) {
+            if (($lastQuoteId || ($lastOrderId && !empty($lastRecurringProfiles))) && $order->getTotalPaid() > 0) {
                 $redirect = Mage::helper('mtpayment/data')->getUrlSuccess();
             }
 

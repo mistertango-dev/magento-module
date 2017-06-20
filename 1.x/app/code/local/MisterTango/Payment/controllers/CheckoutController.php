@@ -5,7 +5,6 @@
  */
 class MisterTango_Payment_CheckoutController extends Mage_Core_Controller_Front_Action
 {
-
     /**
      *
      */

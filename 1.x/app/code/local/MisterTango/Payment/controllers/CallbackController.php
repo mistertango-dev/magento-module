@@ -41,7 +41,7 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
                     $data->custom->data->amount
                 );
             } catch (Exception $e) {
-                die('Error occurred: '.$e->getMessage());
+                die('Error occurred: ' . $e->getMessage());
             }
 
             $callback

@@ -15,7 +15,7 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
         $initPayment = $this->getRequest()->getParam('initpayment');
 
         if (empty($id)) {
-          $id = $session->getLastOrderId();
+            $id = $session->getLastOrderId();
         }
 
         $order = Mage::getModel('sales/order')->load($id);
@@ -25,14 +25,6 @@ class MisterTango_Payment_InformationController extends Mage_Core_Controller_Fro
             $this->norouteAction();
 
             return;
-        }
-
-        // Lets clear session if session quote is equal to specified order qoute and standard redirect is not enabled
-        if (
-            $session->getLastQuoteId() == $order->getQuoteId()
-            && !Mage::helper('mtpayment/data')->isStandardRedirect()
-        ) {
-            $session->clear();
         }
 
         $this->loadLayout();

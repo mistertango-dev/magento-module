@@ -1,7 +1,6 @@
 <script>
     var MTPAYMENT_USERNAME = '<?php echo $this->getUsername(); ?>';
-    var MTPAYMENT_IS_STANDARD_MODE = '<?php echo (int)Mage::helper('mtpayment/data')->isStandardMode(); ?>';
-    var MTPAYMENT_IS_OVERRIDDEN_CALLBACK_URL = <?php echo Mage::helper('mtpayment/data')->isOverriddenCallbackUrl()?'true':'false'; ?>;
+    var MTPAYMENT_IS_OVERRIDDEN_CALLBACK_URL = <?php echo Mage::helper('mtpayment/data')->isOverriddenCallbackUrl() ? 'true' : 'false'; ?>;
     var MTPAYMENT_CALLBACK_URL = '<?php echo Mage::helper('mtpayment/data')->getCallbackUrl(); ?>';
     var MTPAYMENT_URL_ORDERS = '<?php echo $this->getUrl('mtpayment/orders', array('_secure' => true)); ?>';
     var MTPAYMENT_URL_INFORMATION = '<?php echo Mage::helper('mtpayment/data')->getUrlInformation(); ?>';

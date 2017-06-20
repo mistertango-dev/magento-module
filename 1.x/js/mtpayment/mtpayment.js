@@ -93,35 +93,7 @@ MTPayment = {
         MTPayment.onSuccess(response);
     },
     onSuccess: function (response) {
-        if (!MTPayment.order) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (xhttp.readyState == 4 && xhttp.status == 200) {
-                    var response = JSON.parse(xhttp.responseText);
-
-                    if (response.success) {
-                        var elements = document.getElementsByClassName('jsAllowDifferentPayment');
-                        for(var index = 0; index < elements.length; index++) {
-                            elements[index].parentNode.removeChild(elements[index]);
-                        }
-
-                        MTPayment.order = response.order;
-                        MTPayment.success = true;
-
-                        MTPayment.afterSuccess();
-                    }
-                }
-            };
-            xhttp.open('POST', MTPAYMENT_URL_ORDERS + 'validateorder', true);
-            xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhttp.send(
-                'ajax=1' +
-                '&order=' + (MTPayment.order?MTPayment.order:'') +
-                '&transaction=' + MTPayment.transaction +
-                '&websocket=' + mrTangoCollect.ws_id +
-                '&amount=' + MTPayment.amount
-            );
-        }
+        // We might need this later
     },
     onClose: function () {
         MTPayment.isOpened = false;
@@ -133,10 +105,6 @@ MTPayment = {
     afterSuccess: function () {
         if (MTPayment.isOpened === false) {
             var url = MTPAYMENT_URL_INFORMATION;
-            if (!MTPayment.isOfflinePayment && MTPAYMENT_IS_STANDARD_MODE) {
-                url = MTPAYMENT_URL_SUCCESS;
-            }
-
             var operator = url.indexOf('?') === -1?'?':'&';
             window.location.href = url + operator + 'order=' + MTPayment.order;
         }

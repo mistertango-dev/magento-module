@@ -5,12 +5,29 @@
  */
 class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
 {
+    /**
+     *
+     */
     const XML_PATH_USERNAME = 'payment/mtpayment/mrtango_username';
+
+    /**
+     *
+     */
     const XML_PATH_SECRET_KEY = 'payment/mtpayment/mrtango_secret_key';
-    const XML_PATH_STANDARD_MODE = 'payment/mtpayment/standard_mode';
-    const XML_PATH_STANDARD_REDIRECT = 'payment/mtpayment/standard_redirect';
+
+    /**
+     *
+     */
     const XML_PATH_OVERRIDDEN_CALLBACK_URL = 'payment/mtpayment/overridden_callback_url';
+
+    /**
+     *
+     */
     const XML_PATH_CALLBACK_URL = 'payment/mtpayment/callback_url';
+
+    /**
+     *
+     */
     const XML_PATH_STATUS_PENDING = 'payment/mtpayment/status_pending';
 
     /**
@@ -27,22 +44,6 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
     public function getSecretKey()
     {
         return Mage::getStoreConfig(self::XML_PATH_SECRET_KEY);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStandardMode()
-    {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_STANDARD_MODE);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStandardRedirect()
-    {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_STANDARD_REDIRECT);
     }
 
     /**
@@ -79,7 +80,9 @@ class MisterTango_Payment_Helper_Data extends Mage_Payment_Helper_Data
             $quoteId = Mage::getSingleton('checkout/session')->getQuoteId();
         }
 
-        return $quoteId;
+        $quote = Mage::getModel('sales/quote')->load($quoteId);
+
+        return $quote->getReservedOrderId();
     }
 
     /**
