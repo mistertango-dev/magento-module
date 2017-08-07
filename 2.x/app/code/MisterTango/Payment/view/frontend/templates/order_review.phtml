@@ -1,0 +1,74 @@
+<?php
+/**
+ * @var $block \MisterTango\Payment\Block\Checkout;
+ */
+?>
+<p>
+    <?php if ($block->isOrderPaid()): ?>
+        <?php echo __('Payment for this order have been received'); ?>
+    <?php else: ?>
+        <?php echo __('If you have not paid yet and you wish to make a payment'); ?> -
+        <a
+                href="#"
+                data-mtpayment-trigger="1"
+                data-transaction-id="<?php echo $block->getTransactionId(); ?>"
+                data-transaction-email="<?php echo $block->getTransactionEmail(); ?>"
+                data-transaction-amount="<?php echo $block->getTransactionAmount(); ?>"
+                data-transaction-currency="<?php echo $block->getTransactionCurrency(); ?>"
+        >
+            <?php echo __('click here'); ?>
+        </a>
+    <?php endif; ?>
+</p>
+<?php if ($block->hasOrder()): ?>
+<table class="table">
+    <tr>
+        <th>
+            <?php echo __('Date'); ?>
+        </th>
+        <th>
+            <?php echo __('Status'); ?>
+        </th>
+        <th>
+            <?php echo __('Comment'); ?>
+        </th>
+    </tr>
+    <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
+        <tr>
+            <td>
+                <strong>
+                    <?php echo $block->formatDate($_item->getCreatedAtDate(), \IntlDateFormatter::MEDIUM) ?>
+                </strong>
+                <?php echo $block->formatTime($_item->getCreatedAtDate(), \IntlDateFormatter::MEDIUM) ?>
+            </td>
+            <td>
+                <strong>
+                    <?php echo $_item->getStatusLabel() ?>
+                </strong>
+            </td>
+            <td>
+                <?php if ($_item->getComment()): ?>
+                    <?php echo $block->escapeHtml($_item->getComment(), array('b', 'br', 'strong', 'i', 'u')) ?>
+                <?php else: ?>
+                    -
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "MisterTango_Payment/js/process": {
+                "autoOpen": <?php echo (int)$block->isAutoOpen(); ?>,
+                "quoteId": "<?php echo $block->getQuote()->getId(); ?>",
+                "username": "<?php echo $block->getConfig()->getUsername(); ?>",
+                "callbackUrl": "<?php echo $block->getConfig()->getCallbackUrl(); ?>",
+                "locale": "<?php echo $block->getLocale(); ?>"
+            }
+        }
+    }
+
+
+</script>
