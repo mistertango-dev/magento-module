@@ -15,8 +15,7 @@ define(
                 quoteId: null,
                 username: null,
                 callbackUrl: null,
-                locale: null,
-                websocket: null
+                locale: null
             },
             state: {
                 open: false,
