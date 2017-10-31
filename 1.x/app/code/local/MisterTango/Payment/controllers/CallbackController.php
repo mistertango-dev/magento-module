@@ -50,5 +50,7 @@ class MisterTango_Payment_CallbackController extends Mage_Core_Controller_Front_
                 ->setData('amount', $data->custom->data->amount)
                 ->save();
         }
+
+        die('OK');
     }
 }
